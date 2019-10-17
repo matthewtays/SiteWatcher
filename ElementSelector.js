@@ -14,6 +14,8 @@ function initializeElementSelector() {
         break;
       case("addPageToDisplay"):
         break;
+      case("updatePages"):
+        break;
       case("updateBookmark"):
         break;
       case("removeBookmark"):

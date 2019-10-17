@@ -14,6 +14,8 @@ port.onMessage.addListener(function(msg) {
       break;
     case("addPageToDisplay"):
       break;
+    case("updatePages"):
+      break;
     case("updateBookmark"):
       checkIfUpdateBookmark(msg);
       break;

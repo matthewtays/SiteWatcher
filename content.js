@@ -26,6 +26,11 @@ function addPageToDisplayExternal(msg){
   var myNode=document.getElementById("pageSelect");
   addPageToDisplayInternal(newPage,myNode);
 }
+function updatePagesExternal(msg){
+  getData(['pages'],function(data){
+    refreshPagesAndBookmarksDisplay(data.pages);
+  });
+}
 function tryInitializeBookmarksPageContent(){
   var url = window.location.toString();
   if (url=="http://localhost:8000/bookmarksPage.html"){
@@ -43,6 +48,9 @@ function initializeBookmarksPageContent() {
         break;
       case("addPageToDisplay"):
         addPageToDisplayExternal(msg);
+        break;
+      case("updatePages"):
+        updatePagesExternal(msg);
         break;
       case("updateBookmark"):
         updateBookmark(msg);
@@ -93,6 +101,9 @@ function initializeBookmarksPageContent() {
   document.getElementById("testURLButton").addEventListener("click",function(){
     displayTestURLModal("testPageModal",undefined,testURL,undefined);
   });
+  document.getElementById("deletePageButton").addEventListener("click",function(){
+    deletePageListener();
+  });
   // When the user clicks anywhere outside of the modal, close it
   var addBookmarkModal=document.getElementById("addBookmarkModal");
   var testURLModal=document.getElementById("testPageModal");
@@ -116,16 +127,18 @@ function initializeBookmarksPageContent() {
     if(currentPageIndex>=pages.length){
       currentPageIndex=0;
     }
-    refreshPagesHTML(pages,currentPageIndex);
-    var currentPageID=pages[currentPageIndex];
-    getData(currentPageID,function(pageData){
-      console.assert(pageData[currentPageID]!==undefined);
-      var currentPage=jsonToPageItem(pageData[currentPageID]);
-      refreshBookmarksHTML(currentPage.bm);
-    });
+    refreshPagesAndBookmarksDisplay(pages);
   });
 }
-
+function refreshPagesAndBookmarksDisplay(pages){
+  refreshPagesHTML(pages,currentPageIndex);
+  var currentPageID=pages[currentPageIndex];
+  getData(currentPageID,function(pageData){
+    console.assert(pageData[currentPageID]!==undefined);
+    var currentPage=jsonToPageItem(pageData[currentPageID]);
+    refreshBookmarksHTML(currentPage.bm);
+  });
+}
 function addNewBookmark(url,name,pageID){
   var newBookmark=new bookmarkItem(url,name);
   port.postMessage({'command':"addBookMark",
@@ -292,6 +305,14 @@ function testURLListener(msg){
 }
 function testURL(url){
   port.postMessage({'command':'testURL','url':url});
+}
+function deletePageListener(){
+  var node = document.getElementById("pageSelect");
+  var pageName = node.options[node.selectedIndex].value;
+  var pageID=pageItem.nameToID(pageName);
+  currentPageIndex-= (currentPageIndex<=0? 0:1);
+  node.selectedIndex=currentPageIndex;
+  port.postMessage({'command':'deletePage','pageID':pageID});
 }
 //DO NOT TRY TO ACCESS DOC BEFORE THIS! Access in initializeBookmarksPageContent
 document.addEventListener('DOMContentLoaded', tryInitializeBookmarksPageContent);

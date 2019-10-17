@@ -117,10 +117,10 @@ getData(['pages'],function(data){
   }
   console.assert(pages!==undefined&&pages.length>0);
   for(var i=0;i<pages.length;++i){
-    (function(pageID,idx){
+    (function(pageID){
       getData(pageID,function(pageObject){
         if(pageObject[pageID]===undefined){
-          var newPage=new pageItem(pageID,idx);
+          var newPage=new pageItem(pageID);
           setData({[pageID]:newPage.jsonVal},function(){// incase we want to react
           
           });
@@ -140,7 +140,7 @@ getData(['pages'],function(data){
           }
         }
       });
-    })(pages[i],i);
+    })(pages[i]);
   }
   maintainContextMenu();//Not really dependent on Pages, but meh.
   //May as well initialize here
@@ -373,10 +373,9 @@ function moveBookmark(msg,port){
     });
   });
 }
-function addNewPage(msg,port){
-  //confirm page does not exist
-  var page=jsonToPageItem(msg.page);
+function innerAddPage(page){
   var pageID=page.id;
+  //confirm page does not exist
   getData(pageID,function(pageData){
     if(pageData[pageID]!=null){
       alert("Cannot create duplicate page");
@@ -402,6 +401,10 @@ function addNewPage(msg,port){
       });
     }
   });
+}
+function addNewPage(msg,port){
+  var page=jsonToPageItem(msg.page);
+  innerAddPage(page);
 }
 function checkAllPages(port){
   getData(['pages'],function(pagesData){
@@ -572,7 +575,13 @@ function deletePage(msg,port){
         if(pagesTemp[i]==pageID){
           pagesTemp.splice(i,1);
           setData({'pages':pagesTemp},function(){
-            //some outgoing message
+            if(pagesTemp.length==0){
+              let tempDefaultPage=new pageItem('default');
+              innerAddPage(tempDefaultPage);
+            }
+            portsSet.forEach(function(portVal,portValCopy,set){
+              portVal.postMessage({'command':'updatePages'});
+            });
           });
           return;
         }
