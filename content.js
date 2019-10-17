@@ -244,6 +244,7 @@ function refreshPagesHTML(pages,selectedPage){
 
 function refreshBookmarksHTML(pageBookmarks){
   //clear all child nodes
+  console.log("refresh bookmarks called");
   var myNode = document.getElementById("bookMarksList");
   while (myNode.firstChild) {
       myNode.removeChild(myNode.firstChild);
@@ -312,6 +313,9 @@ function deletePageListener(){
   var pageID=pageItem.nameToID(pageName);
   currentPageIndex-= (currentPageIndex<=0? 0:1);
   node.selectedIndex=currentPageIndex;
+  port.postMessage({'command':"updateLastUsedPage",
+                  'pageIDX':currentPageIndex
+                  });
   port.postMessage({'command':'deletePage','pageID':pageID});
 }
 //DO NOT TRY TO ACCESS DOC BEFORE THIS! Access in initializeBookmarksPageContent

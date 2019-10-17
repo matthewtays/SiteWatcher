@@ -197,9 +197,10 @@ function jsonToBookmarkItem(json){
 class pageItem{
   //var name
   //var bm //bookmarks
+  //var idx used for sorting purposes
   //var sort //Sort is an array of sort objects. a sort object is a number represnting sort variable, and a number 0 1 for if its less than or greater than. 0 is less than
   //Sorting options include by marked, by name, by url, by position in page index, and by last updated
-  constructor(name,bookmarks){
+  constructor(name,idx,bookmarks){
     if(typeof name === undefined){
       return;
     }
@@ -209,6 +210,8 @@ class pageItem{
     else{
       this.name=name;
     }
+    console.assert(varExists(idx));
+    this.idx=idx;
     if(bookmarks===undefined){
       this.bm=[];
     }
@@ -241,12 +244,9 @@ class pageItem{
   get jsonVal(){
     return JSON.stringify(this);
   }
-  get idx(){
-    console.assert(false);
-  }
 }
 function jsonObjectToPageItem(json){
-  return new pageItem(json.name,json.bm);
+  return new pageItem(json.name,json.idx,json.bm);
 }
 function jsonToPageItem(json){
   return jsonObjectToPageItem(JSON.parse(json));

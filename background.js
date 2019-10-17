@@ -117,10 +117,10 @@ getData(['pages'],function(data){
   }
   console.assert(pages!==undefined&&pages.length>0);
   for(var i=0;i<pages.length;++i){
-    (function(pageID){
+    (function(pageID,pageIDX){
       getData(pageID,function(pageObject){
         if(pageObject[pageID]===undefined){
-          var newPage=new pageItem(pageID);
+          var newPage=new pageItem(pageID,pageIDX);
           setData({[pageID]:newPage.jsonVal},function(){// incase we want to react
           
           });
@@ -140,7 +140,7 @@ getData(['pages'],function(data){
           }
         }
       });
-    })(pages[i]);
+    })(pages[i],i);
   }
   maintainContextMenu();//Not really dependent on Pages, but meh.
   //May as well initialize here
@@ -373,7 +373,7 @@ function moveBookmark(msg,port){
     });
   });
 }
-function innerAddPage(page){
+function innerAddPage(page,callback){//callback not neccesarily used, but if something is waiting on this
   var pageID=page.id;
   //confirm page does not exist
   getData(pageID,function(pageData){
@@ -388,7 +388,7 @@ function innerAddPage(page){
       });
       //page does not exist, add page to the pages list
       getData(['pages'],function(pagesData){
-        console.assert(pagesData.pages!==undefined&&pagesData.pages.length>0);
+        console.assert(pagesData.pages!==undefined);
         var pages=pagesData.pages;
         pages.push(pageID);
         var newPagesList=[];
@@ -396,7 +396,9 @@ function innerAddPage(page){
           [pageID]:page.jsonVal,
           'pages':pages
         },function(){//in case we ever want to react
-          
+          if(varExists(callback)){
+            callback();
+          }
         });
       });
     }
@@ -480,7 +482,7 @@ function innerDeleteBookmark(bookmarkID){
       }
       else{
         getData(['pages'],function(pagesData){
-          console.assert(pagesData.pages!==undefined&&pagesData.pages.length>0);
+          console.assert(pagesData.pages!==undefined);//Even if pages is empty, it just means we cant find it to remove from a page
           var pages=pagesData.pages;
           for(var i=0;i<pages.length;++i){
             (function(pageID){
@@ -491,7 +493,7 @@ function innerDeleteBookmark(bookmarkID){
                   if(page.bm[j]===bookmarkID){
                     page.bm.splice(j, 1);
                     setData({[pageID]:page.jsonVal},function(){
-                      //Take on good faith that it was found somewhere... cant think of a better solution off the top of my head
+                      //Take on good faith that it was found somewhere... cant think of a better solution off the top of my head. Besides, if the page was deleted this works
                       portsSet.forEach(function(portVal,portValCopy,set){
                         portVal.postMessage({'command':'removeBookmark','bmID':bookmarkID});
                       });
@@ -576,12 +578,18 @@ function deletePage(msg,port){
           pagesTemp.splice(i,1);
           setData({'pages':pagesTemp},function(){
             if(pagesTemp.length==0){
-              let tempDefaultPage=new pageItem('default');
-              innerAddPage(tempDefaultPage);
+              let tempDefaultPage=new pageItem('default',0);
+              innerAddPage(tempDefaultPage,function(){
+                portsSet.forEach(function(portVal,portValCopy,set){
+                  portVal.postMessage({'command':'updatePages'});
+                });
+              });
             }
-            portsSet.forEach(function(portVal,portValCopy,set){
-              portVal.postMessage({'command':'updatePages'});
-            });
+            else{
+              portsSet.forEach(function(portVal,portValCopy,set){
+                portVal.postMessage({'command':'updatePages'});
+              });              
+            }
           });
           return;
         }
