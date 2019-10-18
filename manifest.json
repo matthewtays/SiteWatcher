@@ -34,8 +34,10 @@
         "scripts/support/bookmarkItem.js",
         "scripts/support/pageItem.js",
         "scripts/support/bookmarkRulesItem.js",
-        "ModalControls.js",
-        "content.js",
+        "scripts/support/modalControls.js",
+        "scripts/homePage/homeBookmarks.js",
+        "scripts/homePage/homePages.js",
+        "scripts/homePage/homeRoot.js",
         "ElementSelector.js"
       ],
       "run_at": "document_start"
