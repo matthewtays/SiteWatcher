@@ -5,7 +5,7 @@
 
   "background": {
     "scripts": [
-      "chromeInterface.js",
+      "scripts/support/chromeInterface.js",
       "scripts/support/tool.js",
       "scripts/support/bookmarkItem.js",
       "scripts/support/pageItem.js",
@@ -23,7 +23,7 @@
         "ElementSelectorStyles.css"
       ],
       "js": [
-        "chromeInterface.js",
+        "scripts/support/chromeInterface.js",
         "scripts/support/tool.js",
         "scripts/support/bookmarkItem.js",
         "scripts/support/pageItem.js",
