@@ -10,7 +10,13 @@
       "scripts/support/bookmarkItem.js",
       "scripts/support/pageItem.js",
       "scripts/support/bookmarkRulesItem.js",
-      "background.js"
+      "scripts/background/backgroundBookmarks.js",
+      "scripts/background/backgroundNotification.js",
+      "scripts/background/backgroundPages.js",
+      "scripts/background/backgroundRules.js",
+      "scripts/background/backgroundTestURL.js",
+      "scripts/background/backgroundContextMenu.js",
+      "scripts/background/backgroundRoot.js"
     ],
     "persistent": false
   },
