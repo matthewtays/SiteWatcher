@@ -6,7 +6,10 @@
   "background": {
     "scripts": [
       "chromeInterface.js",
-      "classAndTool.js",
+      "scripts/support/tool.js",
+      "scripts/support/bookmarkItem.js",
+      "scripts/support/pageItem.js",
+      "scripts/support/bookmarkRulesItem.js",
       "background.js"
     ],
     "persistent": false
@@ -21,7 +24,10 @@
       ],
       "js": [
         "chromeInterface.js",
-        "classAndTool.js",
+        "scripts/support/tool.js",
+        "scripts/support/bookmarkItem.js",
+        "scripts/support/pageItem.js",
+        "scripts/support/bookmarkRulesItem.js",
         "ModalControls.js",
         "content.js",
         "ElementSelector.js"
