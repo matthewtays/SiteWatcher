@@ -1,5 +1,5 @@
 function goToHomeAction() {
-  chrome.tabs.create({ url: "http://localhost:8000/bookmarksPage.html" })
+  chrome.tabs.create({ url: "http://localhost:8000/html/bookmarksPage.html" })
   /*chrome.tabs.query({active: true,currentWindow: true}, function (tabs){
     
   });*/
@@ -7,6 +7,7 @@ function goToHomeAction() {
 var localBookmark=undefined;
 var tab;
 var port = chrome.runtime.connect({name: "bookmarkFrontEndPort"});
+var pathToImage="../../images/";
 port.onMessage.addListener(function(msg) {
   switch(msg.command){
     case("addBookmarkToDisplay"):
@@ -52,7 +53,7 @@ function checkIfUpdateBookmark(msg){
   }
   else if(localBookmark!==undefined&&origID==localBookmark.id){
     localBookmark=undefined;
-    document.getElementById("bookmarkToggle").src="images/EmptyStar.png";
+    document.getElementById("bookmarkToggle").src=pathToImage+"EmptyStar.png";
     document.getElementById("updatedIndicator").style.display="none";
     document.getElementById("elementSelectorButton").style.display="none";
   }
@@ -60,7 +61,7 @@ function checkIfUpdateBookmark(msg){
 function checkIfRemoveLocalBookmark(msg){
   if(localBookmark!==undefined&&msg.bmID===localBookmark.id){
     localBookmark=undefined;
-    document.getElementById("bookmarkToggle").src="images/EmptyStar.png";
+    document.getElementById("bookmarkToggle").src=pathToImage+"EmptyStar.png";
     document.getElementById("updatedIndicator").style.display="none";
     document.getElementById("elementSelectorButton").style.display="none";
   }
@@ -120,12 +121,12 @@ function setLocalBookmarkInfo(bookmark){
   updatedIndicator.style.display = "block";
   document.getElementById("elementSelectorButton").style.display="block";
   localBookmark=bookmark;
-  document.getElementById("bookmarkToggle").src="images/star.png";
+  document.getElementById("bookmarkToggle").src=pathToImage+"star.png";
   if(localBookmark.isUpToDate){
-    updatedIndicator.src="images/emptyCircle.png";
+    updatedIndicator.src=pathToImage+"emptyCircle.png";
   }
   else{
-    updatedIndicator.src="images/filledCircle.png";
+    updatedIndicator.src=pathToImage+"filledCircle.png";
   }
 }
 function startElementSelect(){
@@ -149,8 +150,8 @@ document.addEventListener("DOMContentLoaded", function() {
     getData(bookmarkID,function(bookmarkData){
       if(bookmarkData[bookmarkID]===undefined){
         var updatedIndicator=document.getElementById("updatedIndicator");
-        document.getElementById("bookmarkToggle").src="images/EmptyStar.png";
-        updatedIndicator.src="images/emptyCircle.png";
+        document.getElementById("bookmarkToggle").src=pathToImage+"EmptyStar.png";
+        updatedIndicator.src=pathToImage+"emptyCircle.png";
         updatedIndicator.style.display="none";
         document.getElementById("elementSelectorButton").style.display="none";
       }

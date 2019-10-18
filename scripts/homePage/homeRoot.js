@@ -4,7 +4,7 @@ var port=null;
 //****************FUNCTIONS**************
 function tryInitializeBookmarksPageContent(){
   var url = window.location.toString();
-  if (url=="http://localhost:8000/bookmarksPage.html"){
+  if (url=="http://localhost:8000/html/bookmarksPage.html"){
     initializeBookmarksPageContent();
   }
 }

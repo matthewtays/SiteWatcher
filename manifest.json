@@ -26,7 +26,8 @@
         "<all_urls>"
       ],
       "css":[
-        "ElementSelectorStyles.css"
+        "html/elementSelectorStyles.css",
+        "html/homePageStyles.css"
       ],
       "js": [
         "scripts/support/chromeInterface.js",
@@ -38,16 +39,16 @@
         "scripts/homePage/homeBookmarks.js",
         "scripts/homePage/homePages.js",
         "scripts/homePage/homeRoot.js",
-        "ElementSelector.js"
+        "scripts/genericPages/elementSelector.js"
       ],
       "run_at": "document_start"
     }
   ],
-  "options_page": "bookmarksPage.html",
+  "options_page": "html/bookmarksPage.html",
   "browser_action": {
           "default_icon": "images/rat.png",
           "default_title": "Site Watcher",
-          "default_popup": "browserActionPopup.html"
+          "default_popup": "html/browserActionPopup.html"
   },
   "permissions": [
     "alarms",
@@ -57,6 +58,6 @@
     "<all_urls>"
   ],
   "web_accessible_resources": [
-    "ElementSelectorModal.html"
+    "html/elementSelectorModal.html"
   ]
 }
