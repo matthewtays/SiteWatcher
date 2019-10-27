@@ -1,4 +1,15 @@
 //var SortKeys=new Map([[0,"isUpToDate"],[1,"name"],[2,"url"],[3,"st"],[4,"lud"],[5,"posOnPage"]]);//posOnPage requires an exception. Must be loaded onto the bookmark objects before they are sorted.
+/*    <pageDisplayItem id="-defaultPage" class="selectedPage">
+        <p class="no-margin">default</p>
+        <pageOptionsItem>
+          <pageDisplayDropdownBtn>v</pageDisplayDropdownBtn>
+          <pageDisplayDropdownContent class="hidden">
+            <pageDisplayDropdownItem>Edit</pageDisplayDropdownItem>
+            <pageDisplayDropdownItem>Delete</pageDisplayDropdownItem>
+          </pageDisplayDropdownContent>
+        </pageOptionsItem>
+      </pageDisplayItem>
+      */
 class pageItem{
   //var name
   //var bm //bookmarks
@@ -33,11 +44,40 @@ class pageItem{
       this.bm.splice(index, 1);
     }
   }
-  get htmlElement(){
-    var node=document.createElement("option");
+  getHtmlElement(selectCallback,editCallback,deleteCallback){
+    var node=document.createElement("pageDisplayItem");
     node.id=this.id;
-    node.innerHTML=this.name;
-    node.className="pagesBarItem";
+    node.addEventListener("click",selectCallback);
+    var textNode=document.createElement("p");
+    textNode.classList.add("no-margin");
+    textNode.innerHTML=this.name;
+    let optionNode=document.createElement("pageOptionsItem");
+    optionNode.addEventListener("click",function(){event.stopPropagation();});//Prevents edit and delete commands from propogating to the select
+    let displayBtnNode=document.createElement("pageDisplayDropdownBtn");
+    let contentNode=document.createElement("pageDisplayDropdownContent");
+    displayBtnNode.innerHTML="v";
+    displayBtnNode.addEventListener("click",function(){
+      contentNode.classList.toggle("hidden");
+    });
+    contentNode.classList.add("hidden");
+    let editNode=document.createElement("pageDisplayDropdownItem");
+    editNode.innerHTML="edit";
+    let deleteNode=document.createElement("pageDisplayDropdownItem");
+    deleteNode.innerHTML="delete";
+    editNode.addEventListener("click",function(){
+      contentNode.classList.add("hidden");
+      editCallback();
+    });
+    deleteNode.addEventListener("click",function(){
+      contentNode.classList.add("hidden");
+      deleteCallback();
+    });
+    contentNode.appendChild(editNode);
+    contentNode.appendChild(deleteNode);
+    optionNode.appendChild(displayBtnNode);
+    optionNode.appendChild(contentNode);
+    node.appendChild(textNode);
+    node.appendChild(optionNode);
     return node;
   }
   get id(){
@@ -48,6 +88,10 @@ class pageItem{
   }
   get jsonVal(){
     return JSON.stringify(this);
+  }
+  get htmlElement(){
+    console.assert(false);
+    return undefined;
   }
 }
 function jsonObjectToPageItem(json){

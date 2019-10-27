@@ -1,0 +1,160 @@
+:root{
+  --primaryColor:#141414;
+  --secondaryColor:#43464B;
+  --minorColor:#1E1E1E;
+  --accentColor:#00BFFF;
+  --textColor1:#00BFFF
+}
+.no-margin{
+  margin: 0 !important; 
+  padding: 0 !important;
+}
+.fillHeight{
+  height: 100%;
+}
+.fillWidth{
+  width: 100%;
+}
+.flexRow{
+  display:flex; 
+  flex-direction:row; 
+}
+.flexColumn{
+  display: flex; 
+  flex-direction: column; 
+}
+.navBarLinks{
+  color:var(--textColor1); 
+  font-size: 25px;
+}
+.extensionGetLinks{
+  color:var(--textColor1); 
+  font-size: 25px;  
+}
+.hidden{
+  display:none;
+}
+.shown{
+  display:block;
+}
+.bookmarkGridHeader{
+  color:white;
+}
+/*bookmark actions Stuff*/
+p.link{
+  
+}
+p.status{
+  
+}
+p.updated{
+  color:#ff0000;
+}
+p.upToDate{
+  color:#00ff00;
+}
+p.delete{
+  color:#ff0000;
+}
+p.edit{
+  
+}
+bookmarkItem{
+  display: flex; 
+  flex-direction: column; 
+  justify-content:center;
+  align-items:flex-start;
+  color:var(--textColor1);
+  background-color:var(--minorColor);
+}
+bookmarkItem>p{
+  cursor:pointer;
+}
+bookmarkItem:not(:nth-of-type(8n+4)):not(:nth-of-type(8n+3)):not(:nth-of-type(8n+2)):not(:nth-of-type(8n+1)){
+  background-color:var(--primaryColor);
+}
+/* The Modal (background) */
+.modal{
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border-style:outset;
+  border-width:2px;
+  border-color:#282828;
+  background-color:#43464B;
+  color:white;
+}
+pageDisplayItem {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+  border-radius: 10px 10px 0px 0px;
+  display:flex; 
+  flex-direction:row;
+  align-items:center;
+  background-color: var(--secondaryColor);
+}
+/* Change background color of buttons on hover */
+pageDisplayItem:not(.selectedPage):hover{
+  background-color: var(--accentColor);
+}
+pageDisplayItem.selectedPage {
+  background-color: var(--accentColor);
+}
+pageOptionsItem{
+  display:none;
+  margin-left:5px;
+}
+.selectedPage > pageOptionsItem{
+  display:inline;
+}
+pageDisplayDropdownBtn{
+  background-color: #3498DB;
+  color: white;
+  padding: 5px;
+  border: none;
+  cursor: pointer;
+}
+pageDisplayDropdownBtn:hover, pageDisplayDropdownBtn:focus {
+  background-color: #2980B9;
+}
+pageDisplayDropdownContent{
+  position: absolute;
+  background-color: #f1f1f1;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;  
+}
+pageDisplayDropdownItem{
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+}
+pageDisplayItem.unselectedPage > pageOptionsItem{
+  display:none;
+}
+pageDisplayItem{
+  border-style:solid;
+  border-width: 2px 2px 0px 2px;
+  border-color:white;
+}

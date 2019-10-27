@@ -1,63 +1,148 @@
 <!DOCTYPE html>
-<!Colors : Background - #222426 steel gray>
-<html>
+<html style="height: 100%;margin: 0;">
+<meta name=”viewport” content=”width=device-width, initial-scale=1″>
 <head>
-  <title>Page Watcher Bookmarks</title>
-  <link rel="stylesheet" href="homePageStyles.css">
+  <title>Site Watcher</title>
+  <link rel="stylesheet" href="bookmarksPage.css">
 </head>
-<body>
-  <div id="addBookmarkModal" class="modal">
-    <!-- Modal content -->
-    <div class="modal-content" id="addBookmarkModalContent">
-      <span>URL</span>
-      <input type="text" id="bookmarkUrlInputField">
-      <br></br>
-      <span>Name</span>
-      <input type="text" id="bookmarkNameInputField">
-      <select id="bookmarkAddPageSelect"></select>
-      <input type="button" id="confirmAddBookmark" value="confirm">
-      <input type="button" id="cancelAddBookmark" value="cancel">
-    </div>
-  </div>
-  <div id="testPageModal" class="modal">
-    <div class="modal-content" id="testPageModalContent">
-    <span>URL</span>
-    <input type="text" id="testPageUrlInputField">
-    <input type="button" id="testPageAcceptButton" value="confirm">
-    <input type="button" id="testPageCancelButton" value="cancel">
-    <br></br>
-    <p>Some distortion is normal. This tool strips out scripts (makes it safer to use), and various formatting. Not reccomended for normal reading, only to give an indicator</p>
-    <br></br>
-    <div id="htmlDisplayArea"></div>
-    </div>
-  </div>
-  <topBar>
-    <input type="button" id="refreshButton" value="Refresh">
-    <input type="button" id="testURLButton" value="Test URL">
-  </topBar>
-  <pagesBar>
-    <input type="text" id="tabInputField"><br>
-    <input type="submit" id="submitPageButton" value="Add Page">
-    <select id="pageSelect"></select>
-    <input type="button" id="deletePageButton" value="Delete Page">
-    <input type="button" id="openAllUpdatedGlobalButton" value="Open All Updated">
-    <input type="button" id="markAllUpdatedGlobalButton" value="Mark All Read">
-  </pagesBar>
-  <contentSectionLarge>
-    <adSpace>
-    </adSpace>
-    <contentSection>
-      <div>
-        <input type="button" id="createNewBookmarkButton" value="Add New Bookmark">
-        <input type="button" id="openAllUpdatedLocalButton" value="Open All Updated">
-        <input type="button" id="markAllUpdatedLocalButton" value="Mark All Read">
+<body class="no-margin flexColumn" style="height: 100%;">
+  <section id="modals">
+    <div id="addBookmarkModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content" id="addBookmarkModalContent" style="width:50%;">
+         <p style="margin-top:0;">Add New Bookmark</p>
+        <span>URL</span>
+        <input type="text" id="bookmarkUrlInputField">
+        <br></br>
+        <span>Name</span>
+        <input type="text" id="bookmarkNameInputField">
+        <select id="bookmarkAddPageSelect"></select>
+        <input type="button" id="confirmAddBookmark" value="confirm">
+        <input type="button" id="cancelAddBookmark" value="cancel">
       </div>
-      <bookmarksList id="bookMarksList" style="width: 100%">
-      </bookmarksList>
-      <script src="bookmarksPage.js"></script>
-    </contentSection>
-    <adSpace>
-    </adSpace>
-  </contentSectionLarge>
+    </div>
+    <div id="addPageModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content" id="addPageModalContent" style="width:50%;">
+        <p style="margin-top:0;">Add New Page</p>
+        <span>Name</span>
+        <input type="text" id="pageNameInputField">
+        <br></br>
+        <input type="button" id="confirmAddPageButton" value="confirm">
+        <input type="button" id="cancelAddPageButton" value="cancel">
+      </div>
+    </div>
+    <div id="testURLModal" class="modal">
+      <div class="modal-content" id="testPageModalContent" style="width: 80%;">
+        <p style="margin-top:0;">Test URL</p>
+        <span>URL</span>
+        <input type="text" id="testPageUrlInputField">
+        <input type="button" id="testPageAcceptButton" value="confirm">
+        <input type="button" id="testPageCancelButton" value="cancel">
+        <br></br>
+        <p>Some distortion is normal. This tool strips out scripts (makes it safer to use), and various formatting. Not reccomended for normal reading, only to give an indicator</p>
+        <br></br>
+        <div id="htmlDisplayArea"></div>
+      </div>
+    </div>
+  </section>
+  <section id="navbarSection" class="no-margin flexRow" style="background-color:var(--primaryColor); position: fixed; height:100px; width:100%; align-items:center;">
+    <div id="navBarLogo" class="fillHeight flexRow" style="flex: 2 2 200px;">
+      <div id="navBarLogoImage" class="flexRow" style="flex: 1 1 100px; align-items:center; justify-content:flex-end;">
+        <img src="../images/rat.png" alt="Site Watcher" style="height:75px;width:100px;">
+      </div>
+      <div id="navBarLogoText" class="flexRow" style="flex: 2 2 200px; align-items:center; justify-content:flex-start;">
+        <p style="color:#00BFFF; font-size: 45px;">Site Watcher</p>
+      </div>
+    </div>
+    <div id="navBarSettings" class="fillHeight flexRow" style="flex: 1 1 100px; align-items:center; justify-content:flex-end; margin:30px">
+      <a href="https://www.w3schools.com" class="navBarLinks">Settings</a>
+    </div>
+    <div id="navBarAbout" class="fillHeight flexRow" style="flex: 1 1 100px; align-items:center; justify-content:flex-start;">
+      <a href="https://www.w3schools.com" class="navBarLinks">About</a>
+    </div>
+  </section>
+  <section id="navbarCoveredSection" style="flex: 0 0 100px;">
+  </section>
+  <section id="noExtensionRedirectSection" class="no-margin flexColumn" style="flex: 0 0 150px; background-color: var(--minorColor); width:100%;">
+    <div id="noExtensionRedirectTextDiv" class="flexRow" style="flex: 1 1 75px; justify-content:center; align-items:center;">
+      <div id="spacer" style="flex:1 1 50px;"></div>
+      <p style="flex:2 2 100px;color:#00BFFF">
+        Welcome to Site Watcher. It seems you do not have the extension, or else you have it disabled. Unfortunately this website only functions with the Extension. If you would like to learn more about Site Watcher, check out the About page. You may also choose between one of two extension options below.
+      </p>
+      <div id="spacer" style="flex:1 1 50px;"></div>
+    </div>
+    <div id="noExtensionRedirectLinksContainer" class="flexRow" style="flex: 1 1 100px;">
+      <div id="noExtensionRedirectLinksLeft" class="flexColumn" style="flex: 1 1 100px; align-items:center;">
+        <a href="https://www.w3schools.com" class="extensionGetLinks" style="flex: 1 1 50px;">Free</a>
+        <div id="freeTextContainer" class = "flexRow" style="flex: 1 1 100px;color:#00BFFF;">
+          <div id="spacer" style="flex:1 1 50px;"></div>
+          <p style="flex:2 2 100px;">
+            The free version of Site Watcher offers unlimited bookmarking of websites, and notifications when they update to your browser so that you may return and inspect them. Free is supported by ads on the bookmark page.
+          </p>
+          <div id="spacer" style="flex:1 1 50px;"></div>
+        </div>
+      </div>
+      <div id="noExtensionRedirectLinksRight" class="flexColumn" style="flex: 1 1 100px; align-items:center;">
+        <a href="https://www.w3schools.com" class="extensionGetLinks" style="flex: 1 1 50px;">Premium</a>
+        <div id="freeTextContainer" class = "flexRow" style="flex: 1 1 100px;color:#00BFFF;">
+          <div id="spacer" style="flex:1 1 50px;"></div>
+          <p style="flex:2 2 100px;">
+            The premium version of Site Watcher offers all the same features as Free, but also has utilizes an offline homepage that can be viewed whenever, no ads on that page, and the ability to open pages from the menu bar
+          </p>
+          <div id="spacer" style="flex:1 1 50px;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="globalActionsSection" class="flexRow" style="flex: 0 0 100px; justify-content:space-around;align-items:center; background-color: var(--secondaryColor);">
+    <div id="spacer"></div>
+    <input type="button" id="refreshButtonGlobal" value="Refresh All">
+    <input type="button" id="markAllButtonGlobal" value="Mark All">
+    <input type="button" id="openAllButtonGlobal" value="Open All">
+    <input type="button" id="importGlobal" value="Import">
+    <input type="button" id="exportGlobal" value="Export">
+    <input type="button" id="testUrlGlobal" value="Test URL">
+    <div id="spacer"></div>
+  </section>
+  <section id="pageSelectionSection" style="background-color:var(--primaryColor); flex: 0 0 auto;">
+    <div id="pageSelectionList" class="flexRow" style="margin-left:200px; margin-right:200px; justify-content: flex-start; align-items:flex start; flex-wrap: wrap;">
+      <pageDisplayItem id="=addPage">+</pageDisplayItem>
+    </div>
+    <div id="pageSectionBottomBar" class="flexRow" style="background-color:var(--accentColor);">
+      <div id="spacer" style="flex:1 1 100px"></div>
+      <div id="pageSectionButtonSpace" class="flexRow" style="flex:3 3 300px; justify-content:flex-end;margin-top:10px;margin-bottom:10px;">
+        <input type="button" id="refreshButtonLocal" style="margin-left:20px;" value="Refresh All">
+        <input type="button" id="markAllButtonLocal" style="margin-left:20px;" value="Mark All">
+        <input type="button" id="openAllButtonLocal" style="margin-left:20px;" value="Open All">
+      </div>
+      <div id="spacer" style="flex:1 1 100px"></div>
+    </div>
+  </section>
+  <section id="bookmarksDisplaySection" class="flexRow" style="flex: 1 1 100px; background-color:var(--secondaryColor);">
+    <div id="addSpaceLeft" style="flex:1 1 100px;"></div>
+    <div id="bookmarkDisplayArea" style="flex:3 3 300px;">
+      <div id="bookmarkDisplayBox" style="margin-top: 10px; border-style: groove;border-width:1px;border-color:white;background-color:var(--primaryColor); min-height:200px;">
+        <div id="bookmarkGrid" style="margin:10px; display:grid;grid-template-columns: 64% 12% 12% 12%;grid-auto-rows: 30px;align-content: start; justify-items: stretch;">
+          <p id="bookmarkGridHeader1" class="bookmarkGridHeader">Bookmark</p>
+          <p id="bookmarkGridHeader2" class="bookmarkGridHeader">Status</p>
+          <p id="bookmarkGridHeader3" class="bookmarkGridHeader">Edit</p>
+          <p id="bookmarkGridHeader4" class="bookmarkGridHeader">Delete</p>
+          <div id="bookmarkGridTopLine" style="border-style:solid;border-width:1px; border-color:white; grid-column-start: 1; grid-column:1 / span 4; justify-self:stretch; align-self:center;"></div>
+          <bookmarkItem id="=addBookmark" class="=addBookmarkSpacer">
+            <p>+</p>
+          </bookmarkItem>
+          <bookmarkItem class="=addBookmarkSpacer"></bookmarkItem>
+          <bookmarkItem class="=addBookmarkSpacer"></bookmarkItem>
+          <bookmarkItem class="=addBookmarkSpacer"></bookmarkItem>
+        </div>
+      </div>
+      <div id="bottomSpacing" style="height:100px;"></div>
+    </div>
+    <div id="addSpaceRight" style="flex:1 1 100px;"></div>
+  </section>
+  <section id="footer" style="background-color:var(--primaryColor); flex: 0 0 50px;">
+    <p style="color:white;"> trademark stuff?</p>
+  </section>
 </body>
 </html>

@@ -52,44 +52,50 @@ class bookmarkItem{
     return this.lmd>this.lud;
   }
   getHtmlElement(statusButtonCallback,deleteButtonCallback,editButtonCallback){
-    var node=document.createElement("bookmarksListItem");
-    var linkNode=document.createElement("bookmarkLink");
-    var statusNode=document.createElement("bookmarkStatus");
-    var actionNode=document.createElement("bookmarkAction");
-    linkNode.innerHTML='<a href="'+this.url+'">'+this.name+'</a>';
-    var statusButton=document.createElement("button");
-    statusButton.className="textOnly";
-    statusButton.addEventListener("click",statusButtonCallback);
+    //returns a list of elements
+    var result=[];
+    var linkNode=document.createElement("bookmarkItem");
+    var statusNode=document.createElement("bookmarkItem");
+    var editNode=document.createElement("bookmarkItem");
+    var deleteNode=document.createElement("bookmarkItem");
+    linkNode.classList.add("link");
+    statusNode.classList.add("status");
+    editNode.classList.add("edit");
+    deleteNode.classList.add("delete");
+    linkNode.classList.add(this.id);//Not really a class, but its searchable
+    statusNode.classList.add(this.id);
+    editNode.classList.add(this.id);
+    deleteNode.classList.add(this.id);
+    linkNode.innerHTML='<p href="'+this.url+'">'+this.name+'</p>';
+    var statusText=document.createElement("p");
+    statusText.addEventListener("click",statusButtonCallback);
     if(this.isUpToDate){//Defer to updated if equal
-        statusButton.innerHTML="Up to date";
-        statusButton.className+=" upToDate";
+        statusText.innerHTML="Up to date";
+        statusText.classList.add("upToDate");
       }
       else{
-        statusButton.innerHTML="Updated";
-        statusButton.className+=" updated";
+        statusText.innerHTML="Updated";
+        statusText.classList.add("updated");
     }
     if(this.st!==2){
-      statusButton.innerHTML+=" (?)";//Should be a hoverable object
+      statusText.innerHTML+=" (?)";//Should be a hoverable object
     }
-    statusNode.appendChild(statusButton);
-    var deleteButton=document.createElement('button');
-    deleteButton.className="textOnly updated";//updated is for the red.
-    deleteButton.addEventListener("click",deleteButtonCallback);
-    deleteButton.innerHTML="remove";
-    var editButton=document.createElement('button');
-    editButton.className="textOnly edit";
-    var tempURL=this.url;
-    var tempName=this.name;
-    var tempJSON=this.jsonVal;
-    editButton.addEventListener("click",editButtonCallback);
-    editButton.innerHTML="edit";
-    actionNode.appendChild(deleteButton);
-    actionNode.appendChild(editButton);
-    node.appendChild(linkNode);
-    node.appendChild(statusNode);
-    node.appendChild(actionNode);
-    node.id=this.id;
-    return node;
+    statusNode.appendChild(statusText);
+    var deleteText=document.createElement('p');
+    deleteText.classList.add("delete");//updated is for the red.
+    deleteText.addEventListener("click",deleteButtonCallback);
+    deleteText.innerHTML="delete";
+    deleteNode.append(deleteText);
+    var editText=document.createElement('p');
+    editText.classList.add("edit");
+    editText.addEventListener("click",editButtonCallback);
+    editText.innerHTML="edit";
+    editNode.append(editText);
+    result.push(linkNode);
+    result.push(statusNode);
+    result.push(editNode);
+    result.push(deleteNode);
+    return result;
   }
   static idToURL(id){
     if(id.charAt(0)==='_'){

@@ -1,8 +1,9 @@
 //id (id of the page)
 function addPageToDisplayExternal(msg){
   var newPage= jsonToPageItem(msg.page);
-  var myNode=document.getElementById("pageSelect");
-  addPageToDisplayInternal(newPage,myNode);
+  var myNode=document.getElementById("pageSelectionList");
+  var plusNode=document.getElementById("=addPage");
+  addPageToDisplayInternal(newPage,myNode,plusNode);
 }
 function updatePagesExternal(msg){
   getData(['pages'],function(data){
@@ -11,6 +12,7 @@ function updatePagesExternal(msg){
 }
 
 function addNewPage(pageName){
+  console.log("homePages:addNewPage Called");
   getData(['pages'], function(data) {
     console.assert(data.pages!==undefined);
     var newPage = new pageItem(pageName,data.pages.length,[]);
@@ -19,33 +21,28 @@ function addNewPage(pageName){
                       });
   });
 }
-function updateSelectedPage(){
-  var selectNode=document.getElementById("pageSelect");
-  var newPageIndex=selectNode.selectedIndex;
-  if(currentPageIndex!=newPageIndex){
-    currentPageIndex=newPageIndex;
-    getData(['pages'], function(data) {
-      console.assert(data.pages!==undefined&&data.pages.length>0);
-      var pageName=data.pages[newPageIndex];
-      getData(pageName,function(pageData){
-        console.assert(pageData[pageName]!==undefined);
-        port.postMessage({'command':"updateLastUsedPage",
-                          'pageIDX':newPageIndex
-                        });
-        var page=jsonToPageItem(pageData[pageName]);
-        refreshBookmarksHTML(page.bm);
-      });
-    });
-  }
+function getPageHTML(page){
+  return page.getHtmlElement(function(){selectPageListener(page.id);}
+                            ,function(){editPageListener(page.id);}
+                            ,function(){deletePageListener(page.id);});
 }
-function addPageToDisplayInternal(page,listNode){
-  listNode.append(page.htmlElement);
+function addPageToDisplayInternal(page,listNode,plusNode){
+  listNode.insertBefore(getPageHTML(page),plusNode);
 }
 //This function is kinda ghetto. IT SHOULD make the list, sort it, and then append the list
 function refreshPagesHTML(pages,selectedPage){
-  console.log("refreshing html pages:"+pages.length);
-  var myNode=document.getElementById("pageSelect");
-  while (myNode.firstChild) {
+  var myNode=document.getElementById("pageSelectionList");
+  var plusNode=document.getElementById("=addPage");
+  console.assert(varExists(plusNode));
+  for(let i=0;i<myNode.children;){
+    if(myNode[i].tagName==plusNode.tagName&&myNode[i].id!==plusNode.id){
+      myNode.removeChild(myNode[i]);
+    }
+    else{
+      ++i;
+    }
+  }
+  while (myNode.firstChild.id!=plusNode.id) {
     myNode.removeChild(myNode.firstChild);
   }
   var pageElementsList=[];
@@ -53,27 +50,45 @@ function refreshPagesHTML(pages,selectedPage){
     (function(pageId,idx){
       getData(pageId,function(pageData){
         var page=jsonToPageItem(pageData[pageId]);
-        pageElementsList.push({"ele":page.htmlElement,"idx":idx});
+        pageElementsList.push({"ele":getPageHTML(page),"idx":idx});
         if(pageElementsList.length>=pages.length){
           sortBy(pageElementsList,["idx"]);
           for(var j=0;j<pageElementsList.length;++j){
-            myNode.append(pageElementsList[j].ele);
+            myNode.insertBefore(pageElementsList[j].ele,plusNode);
           }
-          myNode.selectedIndex=selectedPage;
+          myNode.children[selectedPage].classList.add("selectedPage");
         }
       });
     })(pages[i],i);
   }
 }
 
-function deletePageListener(){
-  var node = document.getElementById("pageSelect");
-  var pageName = node.options[node.selectedIndex].value;
-  var pageID=pageItem.nameToID(pageName);
-  currentPageIndex-= (currentPageIndex<=0? 0:1);
-  node.selectedIndex=currentPageIndex;
-  port.postMessage({'command':"updateLastUsedPage",
-                  'pageIDX':currentPageIndex
-                  });
+function deletePageListener(pageID){
+  /*TODO: add behavior for deleting page and changing INDEX*/
   port.postMessage({'command':'deletePage','pageID':pageID});
+}
+function editPageListener(pageID){
+  //not implemented.
+}
+function selectPageListener(pageID){
+  console.log("select Page Listener called");
+  var selectedPageNode=document.getElementById(pageID);
+  console.log(selectedPageNode);
+  if(!selectedPageNode.classList.contains("selectedPage")){
+    console.log("Page isn't selected");
+    let previousPages=document.getElementsByClassName("selectedPage");
+    while(previousPages.length>0){
+      previousPages[0].classList.remove("selectedPage");
+    }
+    selectedPageNode.classList.add("selectedPage");
+    getData([pageID],function(data){
+      console.assert(varExists(data[pageID]));
+      let page=jsonToPageItem(data[pageID]);
+      port.postMessage({'command':"updateLastUsedPage",
+                        'pageIDX':page.idx
+                      });
+      currentPageIndex=page.idx;
+      refreshBookmarksHTML(page.bm);
+    });
+  }
 }

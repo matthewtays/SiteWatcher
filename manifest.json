@@ -26,8 +26,7 @@
         "<all_urls>"
       ],
       "css":[
-        "html/elementSelectorStyles.css",
-        "html/homePageStyles.css"
+        "html/elementSelectorStyles.css"
       ],
       "js": [
         "scripts/support/chromeInterface.js",

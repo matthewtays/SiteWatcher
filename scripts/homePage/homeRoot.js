@@ -43,47 +43,47 @@ function initializeBookmarksPageContent() {
     }
   });
   //Get new page button listener
-  document.getElementById("submitPageButton").addEventListener("click", function(){
-    addNewPage(document.getElementById("tabInputField").value);
-  });
-  //add listener to change of selected page
-  document.getElementById("pageSelect").addEventListener("change",function(){
-    updateSelectedPage();
+  document.getElementById("=addPage").addEventListener("click",function(){
+    displayAddPageModal("addPageModal",addNewPage);
   });
   //Add listener to refresh button
-  document.getElementById("refreshButton").addEventListener("click",function(){
-    refreshButton();
+  document.getElementById("refreshButtonGlobal").addEventListener("click",function(){
+    refreshButtonGlobal();
   });
-  document.getElementById("createNewBookmarkButton").addEventListener("click",function(){
+  document.getElementById("=addBookmark").children[0].addEventListener("click",function(){
     displayBookmarkManipulationModal("addBookmarkModal",addNewBookmark,null)
   });
-  document.getElementById("openAllUpdatedGlobalButton").addEventListener("click",function(){
+  document.getElementById("openAllButtonGlobal").addEventListener("click",function(){
     openAllUpdatedGlobal();
   });
-  document.getElementById("markAllUpdatedGlobalButton").addEventListener("click",function(){
+  document.getElementById("markAllButtonGlobal").addEventListener("click",function(){
     markAllUpdatedGlobal();
   });
-  document.getElementById("openAllUpdatedLocalButton").addEventListener("click",function(){
+  document.getElementById("openAllButtonLocal").addEventListener("click",function(){
     openAllUpdatedLocal();
   });
-  document.getElementById("markAllUpdatedLocalButton").addEventListener("click",function(){
+  document.getElementById("markAllButtonLocal").addEventListener("click",function(){
     markAllUpdatedLocal();
   });
-  document.getElementById("testURLButton").addEventListener("click",function(){
-    displayTestURLModal("testPageModal",undefined,testURL,undefined);
-  });
-  document.getElementById("deletePageButton").addEventListener("click",function(){
-    deletePageListener();
+  document.getElementById("testUrlGlobal").addEventListener("click",function(){
+    displayTestURLModal("testURLModal",undefined,testURL,undefined);
   });
   // When the user clicks anywhere outside of the modal, close it
   var addBookmarkModal=document.getElementById("addBookmarkModal");
-  var testURLModal=document.getElementById("testPageModal");
+  var testURLModal=document.getElementById("testURLModal");
+  var addPageModal=document.getElementById("addPageModal");
   window.onclick = function(event) {
     if (event.target == addBookmarkModal) {
       cancelAddBookmark("addBookmarkModal");
     }
     else if(event.target==testURLModal){
-      cancelTestURL(undefined,"testPageModal");
+      cancelTestURL(undefined,"testURLModal");
+    }
+    else if(event.target==addPageModal){
+      cancelAddPage(undefined,"addPageModal");
+    }
+    else if(event.target.tagName!=='pageDisplayDropdownContent'){
+      closeAllDropdowns();
     }
   }
   //Load in bookmarks
@@ -112,8 +112,8 @@ function refreshPagesAndBookmarksDisplay(pages){
 }
 
 //misc listeners
-function refreshButton(){
-  port.postMessage({'command':"refreshBookmarks"});
+function refreshButtonGlobal(){
+  port.postMessage({'command':"refreshBookmarksGlobal"});
 }
 function openAllUpdatedGlobal(){
   port.postMessage({'command':"openAllUpdated"});
@@ -134,6 +134,15 @@ function testURLListener(msg){
 function testURL(url){
   port.postMessage({'command':'testURL','url':url});
 }
-
+function closeAllDropdowns(){
+  var dropdowns = document.getElementsByTagName("pageDisplayDropdownContent");
+  var i;
+  for (i = 0; i < dropdowns.length; i++) {
+    let openDropdown = dropdowns[i];
+    if (!openDropdown.classList.contains('hidden')) {
+      openDropdown.classList.add('hidden');
+    }
+  }
+}
 //DO NOT TRY TO ACCESS DOC BEFORE THIS! Access in initializeBookmarksPageContent
 document.addEventListener('DOMContentLoaded', tryInitializeBookmarksPageContent);

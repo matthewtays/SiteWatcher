@@ -134,7 +134,7 @@ function createModal(){
   let localBookmarkID=bookmarkItem.urlToID(window.location.toString());
   getData([localBookmarkID],function(bookmarkData){
     if(varExists(bookmarkData[localBookmarkID])){
-      fetch(chrome.extension.getURL('/ElementSelectorModal.html'))
+      fetch(chrome.extension.getURL('../html/elementSelectorModal.html'))
         .then(response => response.text())
         .then(data => {
           document.body.innerHTML += data;

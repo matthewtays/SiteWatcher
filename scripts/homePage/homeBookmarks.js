@@ -1,8 +1,9 @@
 function addBookmarkToDisplayExternal(msg){
   if(msg.pageID==currentPageIndex){
     var newBookmark=jsonToBookmarkItem(msg.bookmark);
-    var myNode = document.getElementById("bookMarksList");
-    addBookmarkToDisplayInternal(newBookmark,myNode);
+    var myNode = document.getElementById("bookmarkGrid");
+    var plusNode=document.getElementById("=addBookmark");
+    addBookmarkToDisplayInternal(newBookmark,myNode,plusNode);
   }
   else{
     alert("PageID=="+msg.pageID+" currentPage=="+currentPageIndex);
@@ -22,17 +23,26 @@ function updateBookmark(msg){
   if(msg.origID!==undefined&&msg.origID!==null){
     origID=msg.origID;
   }
-  var bmElement=document.getElementById(origID);
-  if(bmElement!==undefined&&bmElement!==null){
+  var bmElements=document.getElementsByClassName(origID);
+  if(varExists(bmElements)&&bmElements.length>0){
     if(msg.destinationPage!==undefined&&msg.destinationPage!==currentPageIndex){
-      bmElement.parentNode.removeChild(bmElement);
+      for(let i=0;i<bmElements.length;++i){
+        bmElements[i].parentNode.removeChild(bmElements[i]);
+      }
     }
     else{
-      var newNode=bookmark.getHtmlElement(function(){bookmarkStatusListener(bookmark.id);}
+      let newNodes=bookmark.getHtmlElement(function(){bookmarkStatusListener(bookmark.id);}
                                          ,function(){bookmarkDeleteListener(bookmark.id);}
                                          ,function(){bookmarkEditListener(bookmark);}
                                           );
-      document.getElementById("bookMarksList").replaceChild(newNode,bmElement);     
+      for(let i=0;i<newNodes.length;++i){
+        for(let j=0;j<bmElements.length;++j){
+          if(newNodes[i].classList[0]==bmElements[j].classList[0]){
+            document.getElementById("bookmarkGrid").replaceChild(newNodes[i],bmElements[j]); 
+            break;
+          }
+        }
+      }    
     }
   }
   else{
@@ -43,32 +53,42 @@ function updateBookmark(msg){
 }
 function removeBookmark(msg){
   var bookmarkID=msg.bmID;
-  var bmElement=document.getElementById(bookmarkID);
-  if(bmElement!==undefined&&bmElement!==null){
-    bmElement.parentNode.removeChild(bmElement);
+  var bmElements=document.getElementsByClassName(bookmarkID);
+  while(bmElements.length > 0){
+      bmElements[0].parentNode.removeChild(bmElements[0]);
   }
 }
-function addBookmarkToDisplayInternal(bookmark,listNode){
-  listNode.append(bookmark.getHtmlElement(function(){bookmarkStatusListener(bookmark.id);}
+function addBookmarkToDisplayInternal(bookmark,listNode,plusNode){
+  let htmlItems=bookmark.getHtmlElement(function(){bookmarkStatusListener(bookmark.id);}
                                          ,function(){bookmarkDeleteListener(bookmark.id);}
                                          ,function(){bookmarkEditListener(bookmark);}
-                                          ));
+                                          );
+  console.assert(htmlItems.length==4);
+  for(let i=0;i<htmlItems.length;++i){
+    listNode.insertBefore(htmlItems[i],plusNode);
+  }
 }
 
 function refreshBookmarksHTML(pageBookmarks){
   //clear all child nodes
-  console.log("refresh bookmarks called");
-  var myNode = document.getElementById("bookMarksList");
-  while (myNode.firstChild) {
-      myNode.removeChild(myNode.firstChild);
+  var myNode = document.getElementById("bookmarkGrid");
+  var plusNode=document.getElementById("=addBookmark");
+  for(let i=0;i<myNode.children.length;){
+    if(myNode.children[i].tagName===plusNode.tagName&&!myNode.children[i].classList.contains("=addBookmarkSpacer")){
+      myNode.removeChild(myNode.children[i]);
+      console.log("inside remove");
+    }
+    else{
+      ++i;
+    }
   }
   //insert new bookmarks
   if(pageBookmarks!=null){
-    for(var i=0;i<pageBookmarks.length;++i){
+    for(let i=0;i<pageBookmarks.length;++i){
       (function(bookmarkID){
         getData(bookmarkID,function(bookmarkData){
           var bookmark=jsonToBookmarkItem(bookmarkData[bookmarkID]);
-          addBookmarkToDisplayInternal(bookmark,myNode);
+          addBookmarkToDisplayInternal(bookmark,myNode,plusNode);
         }); 
       })(pageBookmarks[i]);
     }

@@ -11,6 +11,7 @@ function addNewBookmark(msg,port){
       alert("cannot create duplicate URL");
     }
     else{
+      console.log("adding bookmark");
       //Bookmark does not exist, get and update the stored page
       getData(['pages'],function(pagesData){
         console.assert(pagesData.pages!==undefined&&pagesData.pages.length>0);

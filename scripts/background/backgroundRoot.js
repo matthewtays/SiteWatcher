@@ -73,7 +73,7 @@ addPortListener(function(port) {
         case("deletePage"):
           deletePage(msg,port);
           break;
-        case("refreshBookmarks"):
+        case("refreshBookmarksGlobal"):
           checkAllPages(port);
           break;
         case("toggleBMStatus"):
@@ -151,6 +151,8 @@ createAlarm("checkPage",{"periodInMinutes":1});
 //lup : the last used page. Used for initializing defaults. IF the last used page is non existant, use index 0
 //-{page name} : an array of names to bookmarks. Always starts with a -
 //_{bookmark name} : actual bookmark and its info
+//+{rule name} is rules
+//=(id) is for misc id items in html like buttons
 //Store HTML compares as md5 hashes
 //
 
