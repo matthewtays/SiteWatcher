@@ -30,7 +30,11 @@ function confirmEditPage(pageName,storedData){
 function getPageHTML(page){
   return page.getHtmlElement(function(){selectPageListener(page.id);}
                             ,function(){editPageListener(page.id);}
-                            ,function(){deletePageListener(page.id);});
+                            ,function(){deletePageListener(page.id);}
+                            ,function(){openAllUpdatedLocal(page.id);}
+                            ,function(){markAllUpdatedLocal(page.id);}
+                            ,function(){refreshLocalPage(page.id);}
+                            );
 }
 function addPageToDisplayInternal(page,listNode,plusNode){
   listNode.insertBefore(getPageHTML(page),plusNode);
@@ -100,7 +104,7 @@ function selectPageListener(pageID){
     });
   }
 }
-function refreshLocalPage(){
+function refreshLocalPage(pageID){
   port.postMessage({'command':"refreshBookmarks"
-                   ,'pageID':currentPageID});
+                   ,'pageID':pageID});
 }

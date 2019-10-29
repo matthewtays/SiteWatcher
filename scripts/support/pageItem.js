@@ -6,6 +6,9 @@
           <pageDisplayDropdownContent class="hidden">
             <pageDisplayDropdownItem>Edit</pageDisplayDropdownItem>
             <pageDisplayDropdownItem>Delete</pageDisplayDropdownItem>
+            <pageDisplayDropdownItem>mark all</pageDisplayDropdownItem>
+            <pageDisplayDropdownItem>open all</pageDisplayDropdownItem>
+            <pageDisplayDropdownItem>refresh</pageDisplayDropdownItem>
           </pageDisplayDropdownContent>
         </pageOptionsItem>
       </pageDisplayItem>
@@ -44,7 +47,17 @@ class pageItem{
       this.bm.splice(index, 1);
     }
   }
-  getHtmlElement(selectCallback,editCallback,deleteCallback){
+  static dropDownItem(callback,innerText,parentNode){
+    let newNode=document.createElement("pageDisplayDropdownItem");
+    newNode.innerHTML=innerText;
+    newNode.addEventListener("click",function(){
+      parentNode.classList.add("hidden");
+      callback();
+    });
+    parentNode.appendChild(newNode);
+    return newNode;
+  }
+  getHtmlElement(selectCallback,editCallback,deleteCallback,openAllCallback,markAllCallback,refreshAllCallback){
     var node=document.createElement("pageDisplayItem");
     node.id=this.id;
     node.addEventListener("click",selectCallback);
@@ -60,20 +73,11 @@ class pageItem{
       contentNode.classList.toggle("hidden");
     });
     contentNode.classList.add("hidden");
-    let editNode=document.createElement("pageDisplayDropdownItem");
-    editNode.innerHTML="edit";
-    let deleteNode=document.createElement("pageDisplayDropdownItem");
-    deleteNode.innerHTML="delete";
-    editNode.addEventListener("click",function(){
-      contentNode.classList.add("hidden");
-      editCallback();
-    });
-    deleteNode.addEventListener("click",function(){
-      contentNode.classList.add("hidden");
-      deleteCallback();
-    });
-    contentNode.appendChild(editNode);
-    contentNode.appendChild(deleteNode);
+    pageItem.dropDownItem(openAllCallback,"Open All",contentNode);
+    pageItem.dropDownItem(markAllCallback,"Mark All",contentNode);
+    pageItem.dropDownItem(refreshAllCallback,"Refresh",contentNode);
+    pageItem.dropDownItem(editCallback,"Edit",contentNode);
+    pageItem.dropDownItem(deleteCallback,"Delete",contentNode);
     optionNode.appendChild(displayBtnNode);
     optionNode.appendChild(contentNode);
     node.appendChild(textNode);

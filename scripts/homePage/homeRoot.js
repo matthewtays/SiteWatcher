@@ -51,9 +51,6 @@ function initializeBookmarksPageContent() {
   document.getElementById("refreshButtonGlobal").addEventListener("click",function(){
     refreshButtonGlobal();
   });
-  document.getElementById("refreshButtonLocal").addEventListener("click",function(){
-    refreshLocalPage();
-  });
   document.getElementById("=addBookmark").children[0].addEventListener("click",function(){
     displayBookmarkManipulationModal("addBookmarkModal",addNewBookmark,null)
   });
@@ -63,12 +60,6 @@ function initializeBookmarksPageContent() {
   document.getElementById("markAllButtonGlobal").addEventListener("click",function(){
     markAllUpdatedGlobal();
   });
-  document.getElementById("openAllButtonLocal").addEventListener("click",function(){
-    openAllUpdatedLocal();
-  });
-  document.getElementById("markAllButtonLocal").addEventListener("click",function(){
-    markAllUpdatedLocal();
-  });
   document.getElementById("testUrlGlobal").addEventListener("click",function(){
     displayTestURLModal("testURLModal",undefined,testURL,undefined);
   });
@@ -76,6 +67,9 @@ function initializeBookmarksPageContent() {
   var addBookmarkModal=document.getElementById("addBookmarkModal");
   var testURLModal=document.getElementById("testURLModal");
   var addPageModal=document.getElementById("addPageModal");
+  
+  let compNode=document.createElement("pageDisplayDropdownItem");
+  let comp2Node=document.createElement("pageDisplayDropdownContent");
   window.onmousedown = function(event) {
     if (event.target == addBookmarkModal) {
       cancelAddBookmark("addBookmarkModal");
@@ -86,7 +80,7 @@ function initializeBookmarksPageContent() {
     else if(event.target==addPageModal){
       hideAddPageModal("addPageModal");
     }
-    else if(event.target.tagName!=='pageDisplayDropdownContent'){
+    else if(event.target.tagName!==compNode.tagName&&event.target.tagName!==comp2Node.tagName){
       closeAllDropdowns();
     }
   }
@@ -107,7 +101,6 @@ function initializeBookmarksPageContent() {
 function refreshPagesAndBookmarksDisplay(pages){
   var temp=currentPageID;
   currentPageID=pages[0];
-  console.log("pages =="+pages);
   let exists=false;
   for(let i=0;i<pages.length;++i){
     if(pages[i]==temp){
@@ -126,7 +119,6 @@ function refreshPagesAndBookmarksDisplay(pages){
   }
   refreshPagesHTML(pages,currentPageID);
   getData(currentPageID,function(pageData){
-    console.log("refreshing: currentPageID="+currentPageID);
     console.assert(pageData[currentPageID]!==undefined);
     var currentPage=jsonToPageItem(pageData[currentPageID]);
     refreshBookmarksHTML(currentPage.bm);
@@ -143,11 +135,11 @@ function openAllUpdatedGlobal(){
 function markAllUpdatedGlobal(){
   port.postMessage({'command':"markAllUpToDate"});
 }
-function openAllUpdatedLocal(){
-  port.postMessage({'command':"openAllUpdated",'pageID':currentPageID});
+function openAllUpdatedLocal(pageID){
+  port.postMessage({'command':"openAllUpdated",'pageID':pageID});
 }
-function markAllUpdatedLocal(){
-  port.postMessage({'command':"markAllUpToDate",'pageID':currentPageID});
+function markAllUpdatedLocal(pageID){
+  port.postMessage({'command':"markAllUpToDate",'pageID':pageID});
 }
 function testURLListener(msg){
   var strippedHTML=msg.html;
