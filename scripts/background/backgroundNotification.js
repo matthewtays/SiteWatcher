@@ -134,7 +134,7 @@ function markUpdatedCallback(url1,url2,set){
 function markAllUpToDate(msg,port){
   if(msg.pageID!==undefined){
     getData([msg.pageID],function(pageData){
-      var localPage=jsonToPageItem(pageData[pageID]);
+      var localPage=jsonToPageItem(pageData[msg.pageID]);
       forAllUpdated(markUpdatedCallback,localPage);
     });
   }
