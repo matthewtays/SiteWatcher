@@ -76,7 +76,7 @@ function initializeBookmarksPageContent() {
   var addBookmarkModal=document.getElementById("addBookmarkModal");
   var testURLModal=document.getElementById("testURLModal");
   var addPageModal=document.getElementById("addPageModal");
-  window.onclick = function(event) {
+  window.onmousedown = function(event) {
     if (event.target == addBookmarkModal) {
       cancelAddBookmark("addBookmarkModal");
     }
