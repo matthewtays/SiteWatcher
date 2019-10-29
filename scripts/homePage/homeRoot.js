@@ -1,5 +1,6 @@
 //****************VARIABLES***************
-var currentPageIndex=0;
+var currentPageID="";
+var potentialPageID=undefined;
 var port=null;
 //****************FUNCTIONS**************
 function tryInitializeBookmarksPageContent(){
@@ -10,7 +11,7 @@ function tryInitializeBookmarksPageContent(){
 }
 function initializeBookmarksPageContent() {
   //variables
-  currentPageIndex=0;
+  currentPageID="-default";
   port = chrome.runtime.connect({name: "bookmarkFrontEndPort"});
   port.onMessage.addListener(function(msg) {
     switch(msg.command){
@@ -50,6 +51,9 @@ function initializeBookmarksPageContent() {
   document.getElementById("refreshButtonGlobal").addEventListener("click",function(){
     refreshButtonGlobal();
   });
+  document.getElementById("refreshButtonLocal").addEventListener("click",function(){
+    refreshLocalPage();
+  });
   document.getElementById("=addBookmark").children[0].addEventListener("click",function(){
     displayBookmarkManipulationModal("addBookmarkModal",addNewBookmark,null)
   });
@@ -80,31 +84,49 @@ function initializeBookmarksPageContent() {
       cancelTestURL(undefined,"testURLModal");
     }
     else if(event.target==addPageModal){
-      cancelAddPage(undefined,"addPageModal");
+      hideAddPageModal("addPageModal");
     }
     else if(event.target.tagName!=='pageDisplayDropdownContent'){
       closeAllDropdowns();
     }
   }
   //Load in bookmarks
-  getData({
-    'pages': [],
-    'lup': 0
-  }, function(data) {
+  getData({'pages': []}, function(data) {
     var pages=data.pages;
-    currentPageIndex=data.lup;
-    console.assert(pages!==undefined);
-    console.assert(pages.length>0);
-    if(currentPageIndex>=pages.length){
-      currentPageIndex=0;
-    }
-    refreshPagesAndBookmarksDisplay(pages);
+    getData(['lup'],function(lupData){
+      currentPageID=lupData.lup;
+      if(currentPageID==undefined){
+        currentPageID=pages[0];
+      }
+      console.assert(pages!==undefined);
+      console.assert(pages.length>0);
+      refreshPagesAndBookmarksDisplay(pages);
+    });
   });
 }
 function refreshPagesAndBookmarksDisplay(pages){
-  refreshPagesHTML(pages,currentPageIndex);
-  var currentPageID=pages[currentPageIndex];
+  var temp=currentPageID;
+  currentPageID=pages[0];
+  console.log("pages =="+pages);
+  let exists=false;
+  for(let i=0;i<pages.length;++i){
+    if(pages[i]==temp){
+      currentPageID=temp;
+      exists=true;
+      break;
+    }
+  }
+  if(!exists){
+    for(let i=0;i<pages.length;++i){
+      if(pages[i]==potentialPageID){
+        currentPageID=potentialPageID;
+        break;
+      }
+    }
+  }
+  refreshPagesHTML(pages,currentPageID);
   getData(currentPageID,function(pageData){
+    console.log("refreshing: currentPageID="+currentPageID);
     console.assert(pageData[currentPageID]!==undefined);
     var currentPage=jsonToPageItem(pageData[currentPageID]);
     refreshBookmarksHTML(currentPage.bm);
@@ -113,7 +135,7 @@ function refreshPagesAndBookmarksDisplay(pages){
 
 //misc listeners
 function refreshButtonGlobal(){
-  port.postMessage({'command':"refreshBookmarksGlobal"});
+  port.postMessage({'command':"refreshBookmarks"});
 }
 function openAllUpdatedGlobal(){
   port.postMessage({'command':"openAllUpdated"});
@@ -122,10 +144,10 @@ function markAllUpdatedGlobal(){
   port.postMessage({'command':"markAllUpToDate"});
 }
 function openAllUpdatedLocal(){
-  port.postMessage({'command':"openAllUpdated",'pageID':currentPageIndex});
+  port.postMessage({'command':"openAllUpdated",'pageID':currentPageID});
 }
 function markAllUpdatedLocal(){
-  port.postMessage({'command':"markAllUpToDate",'pageID':currentPageIndex});
+  port.postMessage({'command':"markAllUpToDate",'pageID':currentPageID});
 }
 function testURLListener(msg){
   var strippedHTML=msg.html;

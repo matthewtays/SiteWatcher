@@ -33,21 +33,6 @@ function addNewPage(msg,port){
   var page=jsonToPageItem(msg.page);
   innerAddPage(page);
 }
-function checkAllPages(port){
-  getData(['pages'],function(pagesData){
-    console.assert(pagesData.pages!==undefined&&pagesData.pages.length>0);
-    var pages=pagesData.pages;
-    for(var i=0;i<pages.length;++i){
-      (function(pageID){
-        getData([pageID],function (pageData){
-          console.assert(pageData[pageID]!==undefined&&pageData[pageID]!==null);
-          var page=jsonToPageItem(pageData[pageID]);
-          checkPage(page);
-        });
-      })(pages[i]);
-    }
-  });
-}
 function checkPage(page){
   for(var j=0;j<page.bm.length;++j){
     (function(bmID){
@@ -58,6 +43,25 @@ function checkPage(page){
       });
     })(page.bm[j]);
   }
+}
+function resetLUP(callback){
+  getData(['pages'],function(pagesData){
+    getData(['lup'],function(data){
+      for(let i=0;i<pagesData.pages.length;++i){
+        if(pagesData.pages[i]==data.lup){
+          if(varExists(callback)){
+            callback();
+          }
+          return;
+        }
+      }
+      setData({'lup':pagesData.pages[0]},function(){
+        if(varExists(callback)){
+          callback();
+        }
+      });
+    });
+  });
 }
 function deletePage(msg,port){
   var pageID=msg.pageID;//Up for debate using page ID or index, but for now ID (its a simple conversion)
@@ -85,14 +89,18 @@ function deletePage(msg,port){
             if(pagesTemp.length==0){
               let tempDefaultPage=new pageItem('default',0);
               innerAddPage(tempDefaultPage,function(){
-                portsSet.forEach(function(portVal,portValCopy,set){
-                  portVal.postMessage({'command':'updatePages'});
+                resetLUP(function(){
+                  portsSet.forEach(function(portVal,portValCopy,set){
+                    portVal.postMessage({'command':'updatePages'});
+                  });
                 });
               });
             }
             else{
-              portsSet.forEach(function(portVal,portValCopy,set){
-                portVal.postMessage({'command':'updatePages'});
+              resetLUP(function(){
+                portsSet.forEach(function(portVal,portValCopy,set){
+                  portVal.postMessage({'command':'updatePages'});
+                });
               });              
             }
           });
@@ -101,4 +109,48 @@ function deletePage(msg,port){
       }
     });
   });
+}
+function innerEditPage(origID,newPage){
+  console.log("Inner edit page");
+  setData({[newPage.id]:newPage.jsonVal},function(){
+    resetLUP(function(){
+      portsSet.forEach(function(portVal,portValCopy,set){
+        portVal.postMessage({'command':'updatePages'});
+      });
+    });
+  });
+  if(newPage.id!==origID){
+    removeData([origID], function(data){
+      
+    });
+    changePageNameForUpdated(newPage.id,origID);
+  }
+  
+}
+function editPage(msg,port){//don't worry about pageIDX, it should be handled internally by page so 'pages' doesn't need to update.
+  var origID=msg.origID;
+  var newPage=jsonToPageItem(msg.page);
+  if(origID!==newPage.id){
+    getData([newPage.id],function(data){
+      if(varExists(data[newPage.id])){
+        alert("cannot create duplicate page");
+      }
+      else{
+        getData(['pages'],function(pagesData){
+          for(let i=0;i<pagesData.pages.length;++i){
+            if(pagesData.pages[i]==msg.origID){
+              pagesData.pages[i]=newPage.id;
+              setData({'pages':pagesData.pages},function(){
+                innerEditPage(origID,newPage);
+              });
+              break;
+            }
+          }
+        });
+      }
+    });
+  }
+  else{
+    innerEditPage(origID,newPage);
+  }
 }

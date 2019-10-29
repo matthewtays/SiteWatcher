@@ -6,7 +6,6 @@ var elementSelectorLocalBookmark=undefined;
 var elementSelectorLocalRules=undefined;
 function initializeElementSelector() {
   //variables
-  currentPageIndex=0;
   port = chrome.runtime.connect({name: "bookmarkFrontEndPort"});
   port.onMessage.addListener(function(msg) {
     switch(msg.command){

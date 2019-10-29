@@ -28,7 +28,7 @@ function addNewBookmark(msg,port){
             portsSet.forEach(function(portVal,portValCopy,set){
               portVal.postMessage({'command':'addBookmarkToDisplay',
                   'bookmark':bookmark.jsonVal,
-                  'pageID':msg.pageID
+                  'pageID':pageName
                   });
             });
             setData({
@@ -46,28 +46,21 @@ function addNewBookmark(msg,port){
     }
   });
 }
-function editBookmark(msg,port){
-  var origID=msg.origID;
-  var newBookmark=jsonToBookmarkItem(msg.bookmark);
-  var newPageIDX=msg.pageIDX;
-  var origPageIDX=msg.origPageIDX;
-  if(origID!==newBookmark.id||newPageIDX!==origPageIDX){
+function innerEditBookmark(origID,newBookmark,newPageID,origPageID){
+  if(origID!==newBookmark.id||newPageID!==origPageID){
     getData(['pages'],function(pagesData){
       console.assert(pagesData.pages.length>origPageIDX);
-      var pageID=pagesData.pages[origPageIDX];
-      getData([pageID],function(pageData){
-        var pageTemp=jsonToPageItem(pageData[pageID]);
+      getData([origPageID],function(pageData){
+        var pageTemp=jsonToPageItem(pageData[origPageID]);
         pageTemp.removeBookmark(origID);
-        if(newPageIDX==origPageIDX){
+        if(newPageID==origPageID){
           pageTemp.addBookMark(newBookmark.id);
         }
-        setData({[pageID]:pageTemp.jsonVal},function(){
+        setData({[origPageID]:pageTemp.jsonVal},function(){
           
         });
       });
-      if(newPageIDX!==origPageIDX){
-        console.assert(pagesData.pages.length>newPageIDX);
-        var newPageID=pagesData.pages[newPageIDX];
+      if(newPageID!==origPageID){
         getData([newPageID],function(pageData){
           var pageTemp2=jsonToPageItem(pageData[newPageID]);
           pageTemp2.addBookmark(newBookmark.id);
@@ -86,10 +79,10 @@ function editBookmark(msg,port){
     newBookmark.matchState(tempBookmark);
     setData({[newBookmark.id]:newBookmark.jsonVal},function(){
       portsSet.forEach(function(portVal,portValCopy,set){
-        portVal.postMessage({'command':'updateBookmark',
-                            'bookmark':newBookmark.jsonVal,
-                            'origID':origID,
-                            'destinationPage':newPageIDX
+        portVal.postMessage({'command':'updateBookmark'
+                            ,'bookmark':newBookmark.jsonVal
+                            ,'origID':origID
+                            ,'destinationPage':newPageID
         });
       });
       maintainContextMenu();
@@ -103,19 +96,35 @@ function editBookmark(msg,port){
     }
   });
 }
+function editBookmark(msg,port){
+  var origID=msg.origID;
+  var newBookmark=jsonToBookmarkItem(msg.bookmark);
+  var newPageID=msg.pageID;
+  var origPageIDX=msg.origPageIDX;
+  if(origID!==newBookmark.id){
+    getData([newBookmark.id],function(data){
+      if(varExists(data[newBookmark.id])){
+        alert("URL already exists, cannot create duplicate");
+      }
+      else{
+        innerEditBookmark(origID,newBookmark,newPageID,origPageIDX);
+      }
+    });
+  }
+  else{
+    innerEditBookmark(origID,newBookmark,newPageID,origPageIDX);
+  }
+}
 function moveBookmark(msg,port){
-  var origPageIdx=msg.origPageIdx;
-  var newPageIdx=msg.newPageIdx;
+  var origPageID=msg.origPageID;
+  var newPageID=msg.newPageID;
   var bookmarkID=msg.bmID;
-  console.assert(origPageIdx!==undefined&&newPageIdx!==undefined&&bookmarkID!==undefined);
-  if(origPageIdx===newPageIdx){
+  console.assert(origPageID!==undefined&&newPageID!==undefined&&bookmarkID!==undefined);
+  if(origPageID===newPageID){
     return;
   }
   getData(['pages'],function(pagesData){
     var pages=pagesData.pages;
-    console.assert(newPageIdx<pages.length&&origPageIdx<pages.length);
-    var origPageID=pages[origPageIdx];
-    var newPageID=pages[newPageIdx];
     getData({origPageID,newPageID},function(pageData){
       var origPage=jsonToPageItem(pageData.origPageID);
       var newPage=jsonToPageItem(pageData.newPageID);

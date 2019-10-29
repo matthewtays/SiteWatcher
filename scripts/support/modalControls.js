@@ -13,6 +13,7 @@ function pageToOption(page){
   //node.id=page.id;
   node.innerHTML=page.name;
   node.className="pagesBarItem";
+  node.id=page.id;
   return node;
 }
 function innerPopulateSelect(selectNodeID,selectedPage){
@@ -34,8 +35,18 @@ function innerPopulateSelect(selectNodeID,selectedPage){
               myNode.append(pageElementsList[j].ele);
             }
             if(selectedPage===undefined){
-              getData({'lup':0},function(data){
-                myNode.selectedIndex=data.lup;
+              getData(['lup'],function(data){
+                if(!varExists(data.lup)){
+                  myNode.selectedIndex=0;
+                }
+                else{
+                  for(let j=0;j<pageElementsList.length;++j){
+                    if(pageElementsList[j].ele.id==data.lup){
+                      myNode.selectedIndex=j;
+                      //break;
+                    }
+                  }
+                }
               });
             }
             else{
@@ -121,18 +132,21 @@ function cancelTestURL(cancelCallback,modalID){
   }
   hideTestURLModal(modalID);
 }
-function displayAddPageModal(modalID,confirmCallback,cancelCallback){
+function displayAddPageModal(modalID,confirmCallback,cancelCallback,defaultNameVal,storedData){
   innerGetAndDisplayModal(modalID);
   clearListeners(document.getElementById("confirmAddPageButton")).addEventListener("click",function(){
-    hideAddPageModal(modalID,confirmCallback);
+    hideAddPageModal(modalID,confirmCallback,storedData);
   });
   clearListeners(document.getElementById("cancelAddPageButton")).addEventListener("click",function(){
-    hideAddPageModal(modalID,cancelCallback);
+    hideAddPageModal(modalID,cancelCallback,storedData);
   });
+  if(varExists(defaultNameVal)){
+    document.getElementById("pageNameInputField").value=defaultNameVal;
+  }
 }
-function hideAddPageModal(modalID,callback){
+function hideAddPageModal(modalID,callback,storedData){
   if(varExists(callback)){
-    callback(document.getElementById("pageNameInputField").value);
+    callback(document.getElementById("pageNameInputField").value,storedData);
   }
   var modal = document.getElementById(modalID);
   modal.style.display="none";

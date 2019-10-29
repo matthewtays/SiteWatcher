@@ -1,12 +1,9 @@
 function addBookmarkToDisplayExternal(msg){
-  if(msg.pageID==currentPageIndex){
+  if(msg.pageID==currentPageID){
     var newBookmark=jsonToBookmarkItem(msg.bookmark);
     var myNode = document.getElementById("bookmarkGrid");
     var plusNode=document.getElementById("=addBookmark");
     addBookmarkToDisplayInternal(newBookmark,myNode,plusNode);
-  }
-  else{
-    alert("PageID=="+msg.pageID+" currentPage=="+currentPageIndex);
   }
 }
 function addNewBookmark(url,name,pageID){
@@ -25,7 +22,7 @@ function updateBookmark(msg){
   }
   var bmElements=document.getElementsByClassName(origID);
   if(varExists(bmElements)&&bmElements.length>0){
-    if(msg.destinationPage!==undefined&&msg.destinationPage!==currentPageIndex){
+    if(varExists(msg.destinationPage)&&msg.destinationPage!==currentPageID){
       for(let i=0;i<bmElements.length;++i){
         bmElements[i].parentNode.removeChild(bmElements[i]);
       }
@@ -46,7 +43,7 @@ function updateBookmark(msg){
     }
   }
   else{
-    if(msg.destinationPage==currentPageIndex){
+    if(msg.destinationPage==currentPageID){
       updateSelectedPage();
     }
   }
@@ -76,7 +73,6 @@ function refreshBookmarksHTML(pageBookmarks){
   for(let i=0;i<myNode.children.length;){
     if(myNode.children[i].tagName===plusNode.tagName&&!myNode.children[i].classList.contains("=addBookmarkSpacer")){
       myNode.removeChild(myNode.children[i]);
-      console.log("inside remove");
     }
     else{
       ++i;
@@ -105,15 +101,15 @@ function bookmarkDeleteListener(bookmarkID){
                     'bmID':bookmarkID
                   });
 }
-function confirmEditBookmark(url,name,pageIDX,storedData){
+function confirmEditBookmark(url,name,pageID,storedData){
   var tempBookmark=new bookmarkItem(url,name);
   port.postMessage({'command':"editBookmark",
                     'origID':storedData.orig.id,
                     'bookmark':tempBookmark.jsonVal,
-                    'pageIDX':pageIDX,
+                    'pageIDX':pageID,
                     'origPageIDX':storedData.page
                   });    
 }
 function bookmarkEditListener(bookmark){
-  displayBookmarkManipulationModal("addBookmarkModal",confirmEditBookmark,undefined,bookmark.url,bookmark.name,currentPageIndex,{'orig':bookmark,'page':currentPageIndex});
+  displayBookmarkManipulationModal("addBookmarkModal",confirmEditBookmark,undefined,bookmark.url,bookmark.name,currentPageID,{'orig':bookmark,'page':currentPageID});
 }

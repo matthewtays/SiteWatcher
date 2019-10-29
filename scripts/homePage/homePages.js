@@ -12,7 +12,6 @@ function updatePagesExternal(msg){
 }
 
 function addNewPage(pageName){
-  console.log("homePages:addNewPage Called");
   getData(['pages'], function(data) {
     console.assert(data.pages!==undefined);
     var newPage = new pageItem(pageName,data.pages.length,[]);
@@ -20,6 +19,13 @@ function addNewPage(pageName){
                       'page':newPage.jsonVal
                       });
   });
+}
+function confirmEditPage(pageName,storedData){
+  var newPage=new pageItem(pageName,storedData.orig.idx,storedData.orig.bm);
+  potentialPageID=newPage.id;
+  port.postMessage({'command':"editPage"
+                   ,'origID':storedData.orig.id
+                   ,'page':newPage.jsonVal});
 }
 function getPageHTML(page){
   return page.getHtmlElement(function(){selectPageListener(page.id);}
@@ -30,7 +36,7 @@ function addPageToDisplayInternal(page,listNode,plusNode){
   listNode.insertBefore(getPageHTML(page),plusNode);
 }
 //This function is kinda ghetto. IT SHOULD make the list, sort it, and then append the list
-function refreshPagesHTML(pages,selectedPage){
+function refreshPagesHTML(pages,selectedPageID){
   var myNode=document.getElementById("pageSelectionList");
   var plusNode=document.getElementById("=addPage");
   console.assert(varExists(plusNode));
@@ -50,13 +56,16 @@ function refreshPagesHTML(pages,selectedPage){
     (function(pageId,idx){
       getData(pageId,function(pageData){
         var page=jsonToPageItem(pageData[pageId]);
-        pageElementsList.push({"ele":getPageHTML(page),"idx":idx});
+        let localElement=getPageHTML(page);
+        if(page.id==selectedPageID){
+          localElement.classList.add("selectedPage");
+        }
+        pageElementsList.push({"ele":localElement,"idx":idx});
         if(pageElementsList.length>=pages.length){
           sortBy(pageElementsList,["idx"]);
           for(var j=0;j<pageElementsList.length;++j){
             myNode.insertBefore(pageElementsList[j].ele,plusNode);
           }
-          myNode.children[selectedPage].classList.add("selectedPage");
         }
       });
     })(pages[i],i);
@@ -64,18 +73,17 @@ function refreshPagesHTML(pages,selectedPage){
 }
 
 function deletePageListener(pageID){
-  /*TODO: add behavior for deleting page and changing INDEX*/
   port.postMessage({'command':'deletePage','pageID':pageID});
 }
 function editPageListener(pageID){
-  //not implemented.
+  getData([pageID],function(data){
+    let page=jsonToPageItem(data[pageID]);
+    displayAddPageModal("addPageModal",confirmEditPage,undefined,page.name,{'orig':page})
+  });
 }
 function selectPageListener(pageID){
-  console.log("select Page Listener called");
   var selectedPageNode=document.getElementById(pageID);
-  console.log(selectedPageNode);
   if(!selectedPageNode.classList.contains("selectedPage")){
-    console.log("Page isn't selected");
     let previousPages=document.getElementsByClassName("selectedPage");
     while(previousPages.length>0){
       previousPages[0].classList.remove("selectedPage");
@@ -85,10 +93,14 @@ function selectPageListener(pageID){
       console.assert(varExists(data[pageID]));
       let page=jsonToPageItem(data[pageID]);
       port.postMessage({'command':"updateLastUsedPage",
-                        'pageIDX':page.idx
+                        'pageID':page.id
                       });
-      currentPageIndex=page.idx;
+      currentPageID=page.id;
       refreshBookmarksHTML(page.bm);
     });
   }
+}
+function refreshLocalPage(){
+  port.postMessage({'command':"refreshBookmarks"
+                   ,'pageID':currentPageID});
 }

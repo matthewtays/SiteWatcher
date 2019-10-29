@@ -106,14 +106,10 @@ function openTabsCallback(url1,url2,set){
 
 function openAllUpdated(msg,port){
   if(msg.pageID!==undefined){
-    getData(['pages'],function(pagesData){
-      if(pagesData.pages.length>msg.pageID){
-        var pageID=pagesData.pages[msg.pageID];
-        getData([pageID],function(pageData){
-          var localPage=jsonToPageItem(pageData[pageID]);
-          forAllUpdated(openTabsCallback,localPage);
-        });
-      }
+    var pageID=msg.pageID;
+    getData([pageID],function(pageData){
+      var localPage=jsonToPageItem(pageData[pageID]);
+      forAllUpdated(openTabsCallback,localPage);
     });
   }
   else{
@@ -137,23 +133,43 @@ function markUpdatedCallback(url1,url2,set){
 }
 function markAllUpToDate(msg,port){
   if(msg.pageID!==undefined){
-    getData(['pages'],function(pagesData){
-      if(pagesData.pages.length>msg.pageID){
-        var pageID=pagesData.pages[msg.pageID];
-        getData([pageID],function(pageData){
-          var localPage=jsonToPageItem(pageData[pageID]);
-          forAllUpdated(markUpdatedCallback,localPage);
-        });
-      }
+    getData([msg.pageID],function(pageData){
+      var localPage=jsonToPageItem(pageData[pageID]);
+      forAllUpdated(markUpdatedCallback,localPage);
     });
   }
   else{
     forAllUpdated(markUpdatedCallback);
   }
 }
-
+function changePageNameForUpdated(newID,origID){
+  if(varExists(updatedBookmarksDictionary[origID])){
+    updatedBookmarksDictionary[newID]=updatedBookmarksDictionary[origID];
+    updatedBookmarksDictionary[origID].clear();
+    updateBadge();
+  }
+}
 function updateLastUsedPage(msg,port){
-  setData({"lup":msg.pageIDX},function(){
+  console.log("Background updated last used page:"+msg.pageID);
+  setData({"lup":msg.pageID},function(){
     //In case we want to respond.
+  });
+}
+
+function checkPages(msg,port){
+  getData(['pages'],function(pagesData){
+    console.assert(varExists(pagesData.pages));
+    var pages=pagesData.pages;
+    for(var i=0;i<pages.length;++i){
+      if(!varExists(msg.pageID)||pages[i]==msg.pageID){
+        (function(pageID){
+          getData([pageID],function (pageData){
+            console.assert(pageData[pageID]!==undefined&&pageData[pageID]!==null);
+            var page=jsonToPageItem(pageData[pageID]);
+            checkPage(page);
+          });
+        })(pages[i]);
+      }
+    }
   });
 }

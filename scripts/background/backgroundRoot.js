@@ -43,6 +43,14 @@ getData(['pages'],function(data){
       });
     })(pages[i],i);
   }
+  //default lup
+  getData(['lup'],function(lupData){
+    if(!varExists(lupData.lup)){
+      setData({'lup':pages[0]},function(){
+        
+      });
+    }
+  });
   maintainContextMenu();//Not really dependent on Pages, but meh.
   //May as well initialize here
   addContextMenuListener(contextMenuListener);
@@ -73,8 +81,11 @@ addPortListener(function(port) {
         case("deletePage"):
           deletePage(msg,port);
           break;
-        case("refreshBookmarksGlobal"):
-          checkAllPages(port);
+        case("editPage"):
+          editPage(msg,port);
+          break;
+        case("refreshBookmarks"):
+          checkPages(msg,port);
           break;
         case("toggleBMStatus"):
           toggleBMStatus(msg,port);
@@ -148,7 +159,7 @@ createAlarm("checkPage",{"periodInMinutes":1});
 
 //How data is stored:
 //pages : An array of strings, keys to pages.
-//lup : the last used page. Used for initializing defaults. IF the last used page is non existant, use index 0
+//lup : the last used page. Used for initializing defaults.
 //-{page name} : an array of names to bookmarks. Always starts with a -
 //_{bookmark name} : actual bookmark and its info
 //+{rule name} is rules
