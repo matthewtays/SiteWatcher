@@ -10,7 +10,7 @@ class bookmarkItem{
     if(typeof url === undefined) {
       return;
     }
-    if(url.charAt(0)==='_'){
+    if(bookmarkItem.isBookmarkID(url)){
       this.url=url.slice(1);
     }
     else{
@@ -66,7 +66,7 @@ class bookmarkItem{
     statusNode.classList.add(this.id);
     editNode.classList.add(this.id);
     deleteNode.classList.add(this.id);
-    linkNode.innerHTML='<p href="'+this.url+'">'+this.name+'</p>';
+    linkNode.innerHTML='<a href="'+this.url+'">'+this.name+'</a>';
     var statusText=document.createElement("p");
     statusText.addEventListener("click",statusButtonCallback);
     if(this.isUpToDate){//Defer to updated if equal

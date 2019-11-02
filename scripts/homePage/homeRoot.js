@@ -43,9 +43,14 @@ function initializeBookmarksPageContent() {
         alert("content received unknown command:"+msg.command);
     }
   });
+  //Hide the no-extension
+  document.getElementById("noExtensionRedirectSection").classList.add("hidden");
   //Get new page button listener
   document.getElementById("=addPage").addEventListener("click",function(){
     displayAddPageModal("addPageModal",addNewPage);
+  });
+  document.getElementById("=allPage").addEventListener("click",function(){
+    document.getElementById("allPageDropdownContent").classList.toggle("hidden");
   });
   //Add listener to refresh button
   document.getElementById("refreshButtonGlobal").addEventListener("click",function(){

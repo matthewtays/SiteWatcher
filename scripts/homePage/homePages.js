@@ -45,15 +45,12 @@ function refreshPagesHTML(pages,selectedPageID){
   var plusNode=document.getElementById("=addPage");
   console.assert(varExists(plusNode));
   for(let i=0;i<myNode.children;){
-    if(myNode[i].tagName==plusNode.tagName&&myNode[i].id!==plusNode.id){
+    if(myNode[i].tagName==plusNode.tagName&&!myNode[i].classList.contains("=reservedPage")){
       myNode.removeChild(myNode[i]);
     }
     else{
       ++i;
     }
-  }
-  while (myNode.firstChild.id!=plusNode.id) {
-    myNode.removeChild(myNode.firstChild);
   }
   var pageElementsList=[];
   for(var i=0;i<pages.length;++i){

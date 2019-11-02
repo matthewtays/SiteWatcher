@@ -23,7 +23,7 @@ class pageItem{
     if(typeof name === undefined){
       return;
     }
-    if(name.charAt(0)==='-'){
+    if(pageItem.isValidID(name)){
       this.name=name.slice(1);
     }
     else{
@@ -89,6 +89,9 @@ class pageItem{
   }
   static nameToID(name){
     return '-'+name;
+  }
+  static isValidID(id){
+    return id.charAt(0)==='-';
   }
   get jsonVal(){
     return JSON.stringify(this);

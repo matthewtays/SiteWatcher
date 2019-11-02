@@ -41,8 +41,8 @@
   color:white;
 }
 /*bookmark actions Stuff*/
-p.link{
-  
+.link>a{
+  color: inherit;
 }
 p.status{
   
@@ -57,6 +57,9 @@ p.delete{
   color:#ff0000;
 }
 p.edit{
+  
+}
+a.bookmarkLink{
   
 }
 bookmarkItem{

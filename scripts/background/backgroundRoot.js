@@ -111,6 +111,9 @@ addPortListener(function(port) {
         case("triggerSelect"):
           triggerSelect(msg,port);
           break;
+        case("collectScraps"):
+          collectScraps(msg,port);
+          break;
         default:
           alert("Background received unknown port command:"+msg.command);
       }
@@ -154,7 +157,84 @@ addAlarmListener(function(alarm){
 createAlarm("checkPage",{"periodInMinutes":1});
 
 
-
+//Searches json and collects any unlinked elements
+function collectScraps(msg,port){
+  getData(null, function(items) {
+    var allKeys = Object.keys(items);
+    var tempPages=items.pages;
+    //Delete any hangers on?
+    //First collect page elements
+    for(let i=0;i<allKeys.length;++i){
+      if(pageItem.isValidID(allKeys[i])){
+        let isContained=false;
+        for(let j=0;j<tempPages.length;++j){
+          if(tempPages[j]==allKeys[i]){
+            isContained=true;
+            break;
+          }
+        }
+        if(!isContained){
+          let tempPage=jsonToPageItem(items[allKeys[i]]);
+          tempPage.idx=tempPages.length;
+          setData({[allKeys[i]]:tempPage.jsonVal},function(){
+            
+          });
+          tempPages.push(allKeys[i]);
+        }
+      }
+    }
+    //Then with added on pages, collect bookmarks
+    let firstPage=jsonToPageItem(items[allKeys[tempPages[0]]]);
+    let bookmarkList=[];
+    for(let i=0;i<allKeys.length;++i){
+      if(bookmarkItem.isBookmarkID(allKeys[i])){
+        bookmarkList.push(allKeys[i]);
+        let isContained=false;
+        for(let j=0;j<tempPages.length;++j){
+          let tempPage=jsonToPageItem(items[allKeys[tempPages[j]]]);
+          for(let k=0;k<tempPage.bm.length;++k){
+            if(tempPage.bm[k]==allKeys[i]){
+              isContained=true;
+              break;
+            }
+          }
+          if(isContained){
+            break;
+          }
+        }
+        if(!isContained){
+          firstPage.bm.add(allKeys[i]);
+        }
+      }
+    }
+    //then with added on bookmarks, collect rules
+    for(let i=0;i<allKeys.length;++i){
+      if(bookmarkRulesItem.isID(allKeys[i])){
+        let bookmarkID=bookmarkItem.urlToID(bookmarkRulesItem.IDToURL(allKeys[i]));
+        let found=false;
+        for(let j=0;j<bookmarkList.length;++j){
+          if(bookmarkList[j]==bookmarkID){
+            found=true;
+            break;
+          }
+        }
+        if(!found){
+          removeData([allKeys[i]],function(){
+            
+          });
+        }
+      }
+    }
+    //Then push tempPages,firstPage
+    setData({'pages':tempPages},function(){
+      
+    });
+    setData({[tempPages[0]]:firstPage.jsonVal},function(){
+      
+    });
+  });
+  
+}
 //Extras!
 
 //How data is stored:

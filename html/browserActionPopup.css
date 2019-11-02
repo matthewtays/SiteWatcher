@@ -1,0 +1,33 @@
+.flexRow{
+  display:flex; 
+  flex-direction:row; 
+}
+.flexColumn{
+  display: flex; 
+  flex-direction: column; 
+}
+.hidden{
+  display:none;
+}
+.bordered{
+  border-style: solid;
+  border-width: 1px;
+}
+.no-margin{
+  margin: 0 !important; 
+  padding: 0 !important;
+}
+.popupLabels{
+  flex: 1 1 10px;
+}
+.popupInputs{
+  flex: 4 4 40px;
+}
+.popupInputContainer{
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+}
+.separatedSection{
+ margin:5px 0px; 
+}

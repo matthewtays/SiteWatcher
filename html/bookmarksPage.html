@@ -95,25 +95,24 @@
       </div>
     </div>
   </section>
-  <section id="globalActionsSection" class="flexRow" style="flex: 0 0 100px; justify-content:space-around;align-items:center; background-color: var(--secondaryColor);">
-    <div id="spacer"></div>
-    <input type="button" id="refreshButtonGlobal" value="Refresh All">
-    <input type="button" id="markAllButtonGlobal" value="Mark All">
-    <input type="button" id="openAllButtonGlobal" value="Open All">
-    <input type="button" id="importGlobal" value="Import">
-    <input type="button" id="exportGlobal" value="Export">
-    <input type="button" id="testUrlGlobal" value="Test URL">
-    <div id="spacer"></div>
-  </section>
-  <section id="pageSelectionSection" style="background-color:var(--primaryColor); flex: 0 0 auto;">
-    <div id="pageSelectionList" class="flexRow" style="margin-left:200px; margin-right:200px; justify-content: flex-start; align-items:flex start; flex-wrap: wrap;">
-      <pageDisplayItem id="=addPage">+</pageDisplayItem>
-    </div>
-  </section>
   <section id="bookmarksDisplaySection" class="flexRow" style="flex: 1 1 100px; background-color:var(--secondaryColor);">
-    <div id="addSpaceLeft" style="flex:1 1 100px;"></div>
-    <div id="bookmarkDisplayArea" style="flex:3 3 300px;">
-      <div id="bookmarkDisplayBox" style="margin-top: 10px; border-style: groove;border-width:1px;border-color:white;background-color:var(--primaryColor); min-height:200px;">
+    <div id="addSpaceLeft" style="flex:1 1 10px;"></div>
+    <div id="bookmarkDisplayArea" style="flex:8 8 80px;background-color:var(--primaryColor);">
+      <div id="pageSelectionList" class="flexRow" style="justify-content: flex-start; align-items:flex start; flex-wrap: wrap;">
+        <pageDisplayItem id="=allPage" class="=reservedPage" style="display:inline;">
+          <p class="no-margin">All</p>
+          <pageDisplayDropdownContent id="allPageDropdownContent" class="hidden">
+            <pageDisplayDropdownItem id="refreshButtonGlobal">Refresh All</pageDisplayDropdownItem>
+            <pageDisplayDropdownItem id="openAllButtonGlobal">Open All</pageDisplayDropdownItem>
+            <pageDisplayDropdownItem id="markAllButtonGlobal">Mark All</pageDisplayDropdownItem>
+            <pageDisplayDropdownItem id="importGlobal">Import</pageDisplayDropdownItem>
+            <pageDisplayDropdownItem id="exportGlobal">Export</pageDisplayDropdownItem>
+            <pageDisplayDropdownItem id="testUrlGlobal">Global</pageDisplayDropdownItem>
+          </pageDisplayDropdownContent>
+        </pageDisplayItem>
+        <pageDisplayItem id="=addPage" class="=reservedPage">+</pageDisplayItem>
+      </div>
+      <div id="bookmarkDisplayBox" style="border-style: groove;border-width:1px;border-color:white;background-color:var(--primaryColor);">
         <div id="bookmarkGrid" style="margin:10px; display:grid;grid-template-columns: 64% 12% 12% 12%;grid-auto-rows: 30px;align-content: start; justify-items: stretch;">
           <p id="bookmarkGridHeader1" class="bookmarkGridHeader">Bookmark</p>
           <p id="bookmarkGridHeader2" class="bookmarkGridHeader">Status</p>
@@ -130,7 +129,7 @@
       </div>
       <div id="bottomSpacing" style="height:100px;"></div>
     </div>
-    <div id="addSpaceRight" style="flex:1 1 100px;"></div>
+    <div id="addSpaceRight" style="flex:1 1 10px;"></div>
   </section>
   <section id="footer" style="background-color:var(--primaryColor); flex: 0 0 50px;">
     <p style="color:white;"> trademark stuff?</p>

@@ -24,6 +24,12 @@ class bookmarkRulesItem{
   static URLToID(url){//Generic rules will have this be their id, but its a good generic
     return '+'+url;
   }
+  static isID(id){
+    return id.charAt(0)=='+';
+  }
+  static IDToURL(id){
+    return id.slice(1);
+  }
   //FROM STACK OVERFLOW
   previousElementSibling (el) {
     if (el.previousElementSibling !== 'undefined') {

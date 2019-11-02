@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Site Watcher Extension</title>
-    <link rel="stylesheet" href="stylesBrowserAction.css">
+    <link rel="stylesheet" href="browserActionPopup.css">
     <script src="../scripts/support/chromeInterface.js"></script>
     <script src="../scripts/support/tool.js"></script>
     <script src="../scripts/support/bookmarkItem.js"></script>
@@ -11,30 +11,37 @@
     <script src="../scripts/support/modalControls.js"></script>
     <script src="../scripts/browserAction/browserActionPopup.js"></script>
   </head>
-  <body>
-    <bookmarkAction>
+  <body class="flexColumn" style="width: 250px;">
+    <section id="imageButtons" class="separatedSection" style="display:flex; flex-direction:row-reverse;">
       <input type="image" id="bookmarkToggle" src="../images/EmptyStar.png" height="50px" width="50px">
       <input type="image" id="updatedIndicator" src="../images/emptyCircle.png" height="50px" width="50px">
-      <button type="button" id="elementSelectorButton">Trim Elements </button>
-      <bookmarkPageInnerPopup id="addBookmarkModal">
-        <span>URL</span>
-        <input type="text" id="bookmarkUrlInputField">
-        <br></br>
-        <span>Name</span>
-        <input type="text" id="bookmarkNameInputField">
-        <select id="bookmarkAddPageSelect"></select>
-        <input type="button" id="confirmAddBookmark" value="confirm">
-        <input type="button" id="cancelAddBookmark" value="cancel">
+    </section>
+    <section id="bookmarkingPopup">
+      <bookmarkPageInnerPopup id="addBookmarkModal" class="separatedSection hidden">
+        <div class="popupInputContainer">
+          <p class="popupLabels">URL</p>
+          <input type="text" id="bookmarkUrlInputField" class="popupInputs">
+        </div>
+        <div class="popupInputContainer">
+          <p class="popupLabels">Name</p>
+          <input type="text" id="bookmarkNameInputField" class="popupInputs">
+        </div>
+        <div class="flexRow" style="justify-content:space-between;">
+          <select id="bookmarkAddPageSelect"></select>
+          <input type="button" id="confirmAddBookmark" value="confirm">
+          <input type="button" id="cancelAddBookmark" value="cancel">
+        </div>
       </bookmarkPageInnerPopup>
-    </bookmarkAction>
-    <solidLine></solidLine>
-    <goToMain>
+    </section>
+    <section id="localPageActions" class="separatedSection">
+      <button type="button" id="elementSelectorButton">Trim Elements </button>
+    </section>
+    <section id="globalButtons" class="separatedSection">
       <button type="button" id="goToHomeButton">Go To Home</button>
-    </goToMain>
-    <solidLine></solidLine>
-    <notifications>
+    </section>
+    <section id="notifications" class="separatedSection">
       <button type="button" id="openAllUpdated">Open All Updated</button>
       <button type="button" id="markAllUpdated">Mark All Updated</button>
-    </notifications>
+    </section>
   </body>
 </html>
