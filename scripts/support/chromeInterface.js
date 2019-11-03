@@ -25,6 +25,20 @@ function getActiveTab(callback){
 function getData(nameObject,callback){//passing null gets ALL keys
   chrome.storage.sync.get(nameObject,callback);
 }
+function goToHomePage(){
+  if (chrome.runtime.openOptionsPage) {
+    chrome.runtime.openOptionsPage();
+  } else {
+    window.open(chrome.runtime.getURL('bookmarksPage.html'));
+  }
+}
+function isHomePage(){
+  if(typeof isHome !== 'undefined'){
+    return isHome;
+  }
+  var url = window.location.toString();
+  return url=="http://localhost:8000/html/bookmarksPage.html";
+}
 function removeAllContextMenus(callback){//only for this extension
   chrome.contextMenus.removeAll(callback);
 }
@@ -43,5 +57,4 @@ function sendMessageToTab(tab,message,responseCallback){
 function updateContextMenu(options,callback){
   chrome.contextMenus.update(options,callback);
 }
-
 var REMOVEERRORSTRING='chrome.runtime.lastError';

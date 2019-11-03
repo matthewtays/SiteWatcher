@@ -26,12 +26,17 @@
 .navBarLinks{
   color:var(--textColor1); 
   font-size: 25px;
+  cursor:pointer;
 }
 .extensionGetLinks{
   color:var(--textColor1); 
   font-size: 25px;  
 }
 .hidden{
+  display:none;
+}
+/*for those that refuse to toggle*/
+.hidden2{
   display:none;
 }
 .shown{
@@ -160,4 +165,15 @@ pageDisplayItem{
   border-style:solid;
   border-width: 2px 2px 0px 2px;
   border-color:white;
+}
+
+/*Homepage vs about page*/
+.homePageSection{
+  
+}
+.aboutPageSection{
+  
+}
+.settingsPageSection{
+  
 }

@@ -1,8 +1,6 @@
 function goToHomeAction() {
-  chrome.tabs.create({ url: "http://localhost:8000/html/bookmarksPage.html" })
-  /*chrome.tabs.query({active: true,currentWindow: true}, function (tabs){
-    
-  });*/
+  //chrome.tabs.create({ url: "http://localhost:8000/html/bookmarksPage.html" });
+  goToHomePage();
 }
 var localBookmark=undefined;
 var tab;

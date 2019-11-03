@@ -4,8 +4,7 @@ var potentialPageID=undefined;
 var port=null;
 //****************FUNCTIONS**************
 function tryInitializeBookmarksPageContent(){
-  var url = window.location.toString();
-  if (url=="http://localhost:8000/html/bookmarksPage.html"){
+  if (isHomePage()){
     initializeBookmarksPageContent();
   }
 }
@@ -44,7 +43,7 @@ function initializeBookmarksPageContent() {
     }
   });
   //Hide the no-extension
-  document.getElementById("noExtensionRedirectSection").classList.add("hidden");
+  document.getElementById("noExtensionRedirectSection").classList.add("hidden2");
   //Get new page button listener
   document.getElementById("=addPage").addEventListener("click",function(){
     displayAddPageModal("addPageModal",addNewPage);

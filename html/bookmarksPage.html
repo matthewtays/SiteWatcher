@@ -4,6 +4,16 @@
 <head>
   <title>Site Watcher</title>
   <link rel="stylesheet" href="bookmarksPage.css">
+  <script src="bookmarksPage.js"></script>
+  <script src="../scripts/support/chromeInterface.js"></script>
+  <script src="../scripts/support/tool.js"></script>
+  <script src="../scripts/support/bookmarkItem.js"></script>
+  <script src="../scripts/support/pageItem.js"></script>
+  <script src="../scripts/support/bookmarkRulesItem.js"></script>
+  <script src="../scripts/support/modalControls.js"></script>
+  <script src="../scripts/homePage/homeBookmarks.js"></script>
+  <script src="../scripts/homePage/homePages.js"></script>
+  <script src="../scripts/homePage/homeRoot.js"></script>
 </head>
 <body class="no-margin flexColumn" style="height: 100%;">
   <section id="modals">
@@ -47,24 +57,29 @@
     </div>
   </section>
   <section id="navbarSection" class="no-margin flexRow" style="background-color:var(--primaryColor); position: fixed; height:100px; width:100%; align-items:center;">
-    <div id="navBarLogo" class="fillHeight flexRow" style="flex: 2 2 200px;">
-      <div id="navBarLogoImage" class="flexRow" style="flex: 1 1 100px; align-items:center; justify-content:flex-end;">
+    <div id="navBarLeftSpacer" style="flex: 1 1 10px;"></div>
+    <div id="navBarLogo" class="fillHeight flexRow" style="flex: 5 5 50px; justify-content:flex-start;">
+      <div id="navBarLogoImage" class="flexRow" style="align-items:center;">
         <img src="../images/rat.png" alt="Site Watcher" style="height:75px;width:100px;">
       </div>
-      <div id="navBarLogoText" class="flexRow" style="flex: 2 2 200px; align-items:center; justify-content:flex-start;">
+      <div id="navBarLogoText" class="flexRow" style="align-items:center;">
         <p style="color:#00BFFF; font-size: 45px;">Site Watcher</p>
       </div>
     </div>
-    <div id="navBarSettings" class="fillHeight flexRow" style="flex: 1 1 100px; align-items:center; justify-content:flex-end; margin:30px">
-      <a href="https://www.w3schools.com" class="navBarLinks">Settings</a>
+    <div id="navBarHome" class="fillHeight flexRow" style="flex: 1 1 10px; align-items:center; justify-content:flex-end;">
+      <p id="navBarHomeText" class="navBarLinks">Home</p>
     </div>
-    <div id="navBarAbout" class="fillHeight flexRow" style="flex: 1 1 100px; align-items:center; justify-content:flex-start;">
-      <a href="https://www.w3schools.com" class="navBarLinks">About</a>
+    <div id="navBarSettings" class="fillHeight flexRow" style="flex: 1 1 10px; align-items:center; justify-content:flex-end;">
+      <p id="navBarSettingsText" class="navBarLinks">Settings</p>
     </div>
+    <div id="navBarAbout" class="fillHeight flexRow" style="flex: 1 1 10px; align-items:center; justify-content:flex-end;">
+      <p id="navBarAboutText" class="navBarLinks">About</p>
+    </div>
+    <div id="navBarRightSpacer" style="flex: 1 1 10px;"></div>
   </section>
   <section id="navbarCoveredSection" style="flex: 0 0 100px;">
   </section>
-  <section id="noExtensionRedirectSection" class="no-margin flexColumn" style="flex: 0 0 150px; background-color: var(--minorColor); width:100%;">
+  <section id="noExtensionRedirectSection" class="no-margin flexColumn homePageSection" style="flex: 0 0 150px; background-color: var(--minorColor); width:100%;">
     <div id="noExtensionRedirectTextDiv" class="flexRow" style="flex: 1 1 75px; justify-content:center; align-items:center;">
       <div id="spacer" style="flex:1 1 50px;"></div>
       <p style="flex:2 2 100px;color:#00BFFF">
@@ -95,7 +110,7 @@
       </div>
     </div>
   </section>
-  <section id="bookmarksDisplaySection" class="flexRow" style="flex: 1 1 100px; background-color:var(--secondaryColor);">
+  <section id="bookmarksDisplaySection" class="flexRow homePageSection" style="flex: 1 1 100px; background-color:var(--secondaryColor);">
     <div id="addSpaceLeft" style="flex:1 1 10px;"></div>
     <div id="bookmarkDisplayArea" style="flex:8 8 80px;background-color:var(--primaryColor);">
       <div id="pageSelectionList" class="flexRow" style="justify-content: flex-start; align-items:flex start; flex-wrap: wrap;">
@@ -130,6 +145,49 @@
       <div id="bottomSpacing" style="height:100px;"></div>
     </div>
     <div id="addSpaceRight" style="flex:1 1 10px;"></div>
+  </section>
+  <section id="aboutPageDescription" class="aboutPageSection hidden" style="background-color:var(--secondaryColor);">
+    <p style="color:var(--textColor1);">
+      SiteWatcher is a tool to manage bookmarks. By bookmarking website with this extension, it will automatically check these 
+      websites periodically to determine if they have been updated, and then give you a notification. Pages may be opened through the extension.
+      Due to the complexity of some websites, SiteWatcher also allows users to designate parts of a page to "watch" or "exclude" when checking for updates.
+      The goal of SiteWatcher is to help users to keep up to date with numerous websites without wasting large periods of time checking to see if they have updated.
+    </p>
+  </section>
+  <section id="aboutPageTutorial" class="aboutPageSection hidden" style="background-color:var(--secondaryColor);">
+    <p style="color:var(--textColor1);">
+      SiteWatcher tries to be simple and intuitive to use. To begin, visit the HomePage. You can reach this through the "action" icon in the top right corner of the screen, and pressing the "Go To Home" button.
+      You will see a "default" tab. By pressing the drop down menu next
+      to a highlighted tab you may access actions such as editing the name of the tab, refreshing its bookmarks, etc. You may also press the "all" tab
+      to access global actions, such as refreshing all bookmarks. The "+" tab allows you to create additional tabs to help divide your content. Perhaps a tab for
+      comics, blogs, etc.
+    </p>
+    <p style="color:var(--textColor1);">
+      Once you are happy with your tabs move on to adding bookmarks. You should see a "+" symbol below the tab bar. Pressing this will pop up a modal
+      where you can add a bookmark. Alternatively you may visit a website you wish to bookmark and use the "action" icon in the top right corner of the screen
+      to bookmark the page. Pressing the star icon will bring up the menu, and you can press confirm to confirm the bookmark.
+      Once a bookmark has been added, feel free to change it via the "edit" button that will appear next to it on the home page.
+    </p>
+    <p style="color:var(--textColor1);">
+      When a bookmark is updated, you will see a notification on the action icon, and the "up to date" text next to the bookmark on the home page will change to
+      a red "updated" text. Pressing this will indicate that you have reviewed the page. Alternatively, you can use the "Mark All" button to mark all bookmarks
+      as up to date on a tab via its dropdown menu, or for all bookmarks via the all dropdown. You can also use the "Open all" button to open all updated bookmarks.
+      In the premium version, open all and mark all are available via the action button in the top right corner.
+    </p>
+    <p style="color:var(--textColor1);">
+      Many websites feature content such as "reccomended pages", comments, or more. These can give "false" update notifications. To help SiteWatcher know to ignore these,
+      visit the page you have bookmarked. You can right click on a section, and then click "select Element". This will bring up SiteWatcher's element Selector
+      modal on the page. It will also highlight the element. From here, you can determine whether to force to include, or force to exclude an element from the update.
+      An include will always override an exclude. You can also navigate up or down the html tree via the appropriate buttons in the modal, and the selected region should
+      change. Once you are happy, press confirm and the new "rule" will be created.
+    </p>
+  </section>
+  <section id="aboutPageBottomSpacer" class="aboutPageSection hidden" style="flex: 1 1 100px; background-color:var(--secondaryColor);">
+  </section>
+  <section id="settingsPagePlaceholder" class="settingsPageSection hidden" style="background-color:var(--secondaryColor)">
+    <p style="color:var(--textColor1);">Not Implemented, sorry</p>
+  </section>
+  <section id="settingsPageBottomSpacer" class="settingsPageSection hidden" style="flex: 1 1 100px; background-color:var(--secondaryColor);">
   </section>
   <section id="footer" style="background-color:var(--primaryColor); flex: 0 0 50px;">
     <p style="color:white;"> trademark stuff?</p>
